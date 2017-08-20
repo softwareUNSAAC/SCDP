@@ -116,12 +116,34 @@
         else
         {
             if(User::isOrganizingCommittee())
-            {?>
+            {
+        ?>
             <!-- ////////////////////////////////////BEGIN USER COMISION ORGANIZADORA////////////////////////////////// -->
             <li><a href="{{URL::to('comision/index.html')}}"><span class="glyphicon glyphicon-home"></span> Home</a></li>
             <!-- begin integrantes -->
             <li><a href="{{URL::to('comision/integrantes/list.html')}}"><span class="glyphicon glyphicon-user"></span> Integrantes</a></li>
             <!-- end integrantes -->
+            <!-- begin tornes  fallllllllllllllltaa-->
+            <!-- begin docente -->
+            <li class="parent ">
+                <a href="{{ URL::to( 'docente/listar');}}">
+                    <span class="glyphicon glyphicon-user"></span> Docentes <span data-toggle="collapse" href="#sub-item-docente" class="icon pull-right"><em class="glyphicon glyphicon-s glyphicon-plus"></em></span>
+                </a>
+
+                <ul class="children collapse" id="sub-item-docente">
+                    <li>
+                        <a class="" href="{{ URL::to( 'docente/insertar');}}">
+                            <span class="glyphicon glyphicon-share-alt"></span> Agregar Docente
+                        </a>
+                    </li>
+
+                </ul>
+            </li>
+            <!-- end docente-->
+
+            <li><a href="{{URL::to('torneos/list.html')}}"><span class="glyphicon glyphicon-tags"></span> torneos</a></li>
+            <!-- end torneos-->
+
             <!-- begin Arbitro -->
             <li><a href="{{URL::to('Arbitros/list.html')}}"><span class="glyphicon glyphicon-tags"></span> Arbitros</a></li>
             <!-- end Arbitros-->

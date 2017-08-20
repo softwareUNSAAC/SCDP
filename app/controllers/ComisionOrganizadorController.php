@@ -11,7 +11,9 @@ class ComisionOrganizadorController extends \BaseController {
 	{
         $idcomision = Session::get('user_idcom_orgdor');
         $nrointegrantess = IntegrantesCO::where('codCom_Org','=',$idcomision)->count();
-        return View::make('user_com_organizing.index')->with('nrointegrantess',$nrointegrantess);
+        $campeonato = Campeonato::where('codCom_Org','=',$idcomision)->first();
+
+        return View::make('user_com_organizing.index')->with('nrointegrantess',$nrointegrantess)->with('campeonato',$campeonato);
 	}
     public function addintegrante_get()
     {
@@ -30,23 +32,20 @@ class ComisionOrganizadorController extends \BaseController {
         }
         else {
             //verificamos que el docente exista
-            $iddocente = substr(Input::get('Nombre'), 0, 6);
-            if ($docente = Docente::where('codDocente', '=', $iddocente)->first())
-            {
-                //verificamos de que las funcines no se repitan
+
                 $rol = Input::get('Rol');
+                $dni=Input::get('dni');
                 $idcom_orgdor = Session::get('user_idcom_orgdor');
                 if ($data = IntegrantesCO::where('codCom_Org', '=', $idcom_orgdor)->where('rol','=',$rol)->first())
                 {
-                    $error = ['wilson' => 'El '.$rol.' es '.$data->DataDocente[0]->nombre.' '.$data->DataDocente[0]
-                            ->apellidoP.' '.$data->DataDocente[0]->apellidoM.' nose aceptan dos '.$rol.'s'];
+                    $error = ['wilson' => 'El '.$rol.' es '.$data->nombre.' '.$data->apellidos.' nose aceptan dos '.$rol.'s'];
                     return Redirect::back()->withInput()->withErrors($error);
                 }
                 else
                 {
-                    if ($data = IntegrantesCO::where('codCom_Org', '=', $idcom_orgdor)->where('codDocente','=',$iddocente)->first())
+                    if ($data = IntegrantesCO::where('codCom_Org', '=', $idcom_orgdor)->where('dni','=',$dni)->first())
                     {
-                        $error = ['wilson' => 'El docente que ingreso ya es '.$rol.' por favor ingrese otro docente'];
+                        $error = ['wilson' => 'la persona ya  '.$rol.' por favor ingrese otra persona'];
                         return Redirect::back()->withInput()->withErrors($error);
                     }
                     else
@@ -56,19 +55,16 @@ class ComisionOrganizadorController extends \BaseController {
                         $newIntegrante->dni=Input::get('dni');
                         $newIntegrante->rol = Input::get('Rol');
                         $newIntegrante->codCom_Org = $idcom_orgdor;
-                        $newIntegrante->codDocente = $iddocente;
+                        $newIntegrante->nombre = Input::get('nombre');;
+                        $newIntegrante->apellidos = Input::get('apellidos');;
                         $newIntegrante->save();
                         $success = ['wilson' => 'Integrante Agregado Satisfactoriamente'];
                         return Redirect::to('comision/integrantes/list.html')->withErrors($success);
                     }
                 }
             }
-            else
-            {
-                $error = ['wilson' => 'Este docente no existe en la base de datos'];
-                return Redirect::back()->withInput()->withErrors($error);
-            }
-        }
+
+
     }
     public function listintegrante()
     {
@@ -79,6 +75,6 @@ class ComisionOrganizadorController extends \BaseController {
     {
         IntegrantesCO::find($id)->delete();
         $success = ['wilson' => 'Integrante se elimino Satisfactoriamente'];
-        return Redirect::to('comision/integrantes/list.html')->withErrors($success);
+        return Redirect::to('campeonato/insertar')->withErrors($success);
     }
 }

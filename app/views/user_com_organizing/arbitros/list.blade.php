@@ -20,7 +20,7 @@
                 <div class="panel-tools pull-right">
                     <div class="form-inline">
                         <div class="form-group">
-                            <a class="btn btn-info margin text-lowercase" type="button" href="{{URL::to('Arbitros/insertar.html')}}"><span class="glyphicon glyphicon-plus"></span>Agregar Nuevo Arbitro</a>
+                            <a class="btn btn-info margin text-lowercase" type="button" href="{{URL::to('Arbitros/insertar.html')}}"><span class="glyphicon glyphicon-plus"></span>Agregar Arbitro</a>
                         </div>
                     </div>
                 </div>

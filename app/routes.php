@@ -42,7 +42,22 @@ Route::group(array('before'=>'admin'), function()
             Route::get('usuarioequipo/editar/{id}','CuentasController@editarequipo');
             Route::post('usuarioequipo/update/{id}','CuentasController@updateequipo');
             Route::get('usuarioequipo/eliminar/{id}','CuentasController@eliminarequipo');
-            //end cuentas de usuarios
+
+            //espectadores
+            Route::get('espectadores/listar', 'ExpectadoresController@index');
+            Route::get('espectadores/insertar', 'ExpectadoresController@insertardocente');
+            Route::get('espectadores/editar/{id}', 'ExpectadoresController@editardocente');
+            Route::post('espectador/formulario1', 'ExpectadoresController@store');
+            Route::post('espectador/formulario2/{id}', 'ExpectadoresController@update');
+            Route::get('espectadores/eliminar/{id}', 'ExpectadoresController@delete');
+            Route::post('espectadores/search', 'ExpectadoresController@buscar');
+           // Route::any('docente/pdf','DocenteController@getPDF');
+
+        });
+
+//===================Funciones de la Comision Organizadora====================
+Route::group(array('before'=>'organ'), function()
+        { //end cuentas de usuarios
             //miembro comision de justicia
             Route::get('miembrocomjusticia/listar', 'MiembroComJusticiaController@index');
             Route::get('miembrocomjusticiainsertar', 'MiembroComJusticiaController@insertarmiembro');
@@ -67,21 +82,6 @@ Route::group(array('before'=>'admin'), function()
             Route::post('DptoAcademico/formulario2/{id}', 'DptoAcademicoController@update');
             Route::get('DptoAcademico/eliminar/{id}', 'DptoAcademicoController@delete');
 
-            //espectadores
-            Route::get('espectadores/listar', 'ExpectadoresController@index');
-            Route::get('espectadores/insertar', 'ExpectadoresController@insertardocente');
-            Route::get('espectadores/editar/{id}', 'ExpectadoresController@editardocente');
-            Route::post('espectador/formulario1', 'ExpectadoresController@store');
-            Route::post('espectador/formulario2/{id}', 'ExpectadoresController@update');
-            Route::get('espectadores/eliminar/{id}', 'ExpectadoresController@delete');
-            Route::post('espectadores/search', 'ExpectadoresController@buscar');
-           // Route::any('docente/pdf','DocenteController@getPDF');
-
-        });
-
-//===================Funciones de la Comision Organizadora====================
-Route::group(array('before'=>'organ'), function()
-        {
             //--bienvenida
             Route::get('comision/index.html', 'ComisionOrganizadorController@index');//bienvenida
             //--para los integrantes
@@ -146,8 +146,8 @@ Route::group(array('before'=>'organ'), function()
             Route::get('campeonato/detail/equipo/{id1}/{id2}/detalle.html', 'CampeonatoController@detalleequipojugador');
             Route::get('campeonato/detail/equipo/{id1}/{id2}/jugador/{id3}/detail.html', 'CampeonatoController@detallejugador');
 
-            Route::get('campeonato/detail/{id}/configuracion.html', 'CampeonatoController@configuracion');
-            Route::post('campeonato/detail/{id}/configuracion/add.html', 'CampeonatoController@addconfig');
+            Route::get('campeonato/{id}/configuracion.html', 'CampeonatoController@configuracion');
+            Route::post('campeonato/{id}/configuracion/add.html', 'CampeonatoController@addconfig');
 
             Route::get('campeonato/detail/{id}/configuracionD.html', 'CampeonatoController@configuracionD');
             Route::post('campeonato/detail/{id}/configuracionD/add.html', 'CampeonatoController@addconfigD');
@@ -227,10 +227,14 @@ Route::group(array('before'=>'organ'), function()
             Route::get('torneo/create/{id}','TorneoController@create');
             Route::get('torneo/{id}/{id2}/detail.html','TorneoController@detail');
             Route::get('torneo/detail/{id}/{id2}/fixture.html','TorneoController@fixture');
+            Route::get('torneo/create/{id}','TorneoController@create');
+
             Route::post('torneo/{id}/{id2}/agregarE','TorneoController@agregarE');
 
             Route::get('torneo/delete/{id}/{id2}','TorneoController@destroy');
+
             Route::resource('torneo','TorneoController');
+
             Route::post('torneo/{id}/{id2}/detail.html/reportes','TorneoController@reportes');
             //fechas y partido
             Route::get('fechas/{id1}/{id2}/{id3}/detail.html','FechasController@detail');

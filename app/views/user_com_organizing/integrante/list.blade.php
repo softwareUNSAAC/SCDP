@@ -37,7 +37,6 @@
                     <tr>
                         <th>DNI</th>
                         <th>Nombre</th>
-                        <th>Código</th>
                         <th>Rol</th>
                         <th>Acción</th>
                     </tr>
@@ -46,8 +45,7 @@
                   @foreach($integrantesall as $val)
                       <tr>
                           <td>{{ $val->dni}}</td>
-                          <td>{{ $val->DataDocente[0]->nombre.' '.$val->DataDocente[0]->apellidoP.' '.$val->DataDocente[0]->apellidoM }}</td>
-                          <td>{{ $val->codDocente }}</td>
+                          <td>{{ $val->nombre." ".$val->apellidos }}</td>
                           <td>{{ $val->rol}}</td>
                           <td>
                               <a class="label label-danger" href="{{URL::to('comision/integrantes/delete/'.$val->dni)}}">

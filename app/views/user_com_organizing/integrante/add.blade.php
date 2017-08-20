@@ -6,6 +6,7 @@
 
 @section('estilos')
     <link href="{{asset('/js/jquery-ui/jquery-ui.css')}}" rel="stylesheet">
+
 @stop
 
 @section('rutanavegacion')
@@ -28,30 +29,38 @@
                 @include('alerts.errors')
                 <!-- END PARA MANEJO DE ERRORES -->
                 <div class="col-md-12">
-                    {{ Form::open(array('url'=>'comisionintegrantesadd','autocomplete'=>'off','class'=>'form_horizontal','role'=>'form'))}}
+                    {{ Form::open(array('url'=>'comisionintegrantesadd','autocomplete'=>'off','class'=>'form-horizontal','role'=>'form'))}}
                     <!-- BEGIN CONTENIDO DEL FORMULARIO -->
-                    <div class="form-group">
+                    <div class="form-group " id="h1">
                         {{Form::label('lbldni','DNI:')}}
-                        {{Form::text('dni','',['class'=>'form-control','placeholder'=>'ingrese dni','maxlength'=>'8'])}}
+                        {{Form::text('dni','',['class'=>'form-control','placeholder'=>'ingrese dni','maxlength'=>'8','id'=>'ver'])}}
+
                     </div>
-                    <div class="form-group" >
-                        {{Form::label('lbldocente','Nombre del integrante:')}}
-                        {{Form::text('Nombre',Input::old('docenteauto'),['class'=>'form-control','placeholder'=>'ingrese el nombre del integrante','id'=>'docenteauto'])}}
-                    </div>
+                        <div class="form-group " id="h1">
+                            {{Form::label('lbnombre','nombre:')}}
+                            {{Form::text('dni','',['class'=>'form-control','placeholder'=>'ingrese dni','maxlength'=>'8','id'=>'ver'])}}
+
+                        </div>
+                        <div class="form-group " id="h1">
+                            {{Form::label('lbapellidos','apellidos:')}}
+                            {{Form::text('dni','',['class'=>'form-control','placeholder'=>'ingrese dni','maxlength'=>'8','id'=>'ver'])}}
+
+                        </div>
                     <div class="form-group">
                         <label>Rol</label>
                         <select  class="form-control" name="Rol">
                             <option class="form-control" value="presidente">Presidente</option>
                             <option class="form-control" value="secretario">Secretario</option>
-                            <option class="form-control" value="otros">Otro</option>
+                            <option class="form-control" value="otros">miembro</option>
                         </select>
                     </div>
                     <button type="submit" class="btn btn-primary">Guardar</button>
                     <button type="reset" class="btn btn-default">Limpiar</button>
+                        <div class="pull-right">
+                            <button type="submit" class="btn btn-danger" onclick="history.back()">Cancelar</button>
+                        </div>
                     {{ Form::close()}}
-                    <div class="pull-right">
-                        <button type="submit" class="btn btn-danger" onclick="history.back()">Cancelar</button>
-                    </div>
+
                         <!-- END CONTENIDO DEL FORMULARIO -->
                 </div>
             </div>
@@ -61,6 +70,7 @@
 
 @section ('scrips')
     <script src="{{asset('/js/jquery-ui/jquery-ui.js')}}"></script>
+
     <script>
         $(function() {
             $("#docenteauto").autocomplete({
@@ -72,6 +82,17 @@
             });
         });
     </script>
+
+
+    <script type="text/javascript">
+        timer()
+        alert($('input:text[dni]').val());
+
+                //saco el valor accediendo a un input de tipo text y name = nombre
+
+
+    </script>
+
 @stop
 
 @endsection

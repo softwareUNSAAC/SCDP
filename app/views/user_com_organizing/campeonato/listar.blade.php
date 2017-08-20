@@ -34,7 +34,6 @@
                     <tr>
                         <th>Nombre</th>
                         <th>Fecha creacion</th>
-                        <th>Reglamento</th>
                         <th>Acción</th>
                     </tr>
                     </thead>
@@ -43,7 +42,7 @@
                         <tr>
                             <td>{{$camp->nombre}}</td>
                             <td>{{$camp->fechaCreacion}}</td>
-                            <td>{{$camp->reglamento}}</td>
+
                             <td>
                                 <a class="label label-primary" href="editar/{{ $camp->codCampeonato}}">
                                     <span class="glyphicon glyphicon-edit">&nbsp;Edit</span>

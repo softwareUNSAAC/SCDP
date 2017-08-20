@@ -4,10 +4,7 @@ class IntegrantesCO extends Eloquent{
     protected $table = 'tint_com_org';
     public $timestamps = false;
     protected $primaryKey = 'dni';
-    protected $fillable = ['dni','rol','codCom_Org','codDocente'];
+    protected $fillable = ['dni','rol','codCom_Org','nombre','apellidos'];
 
-    public function DataDocente()
-    {
-        return $this -> hasMany("Docente",'codDocente','codDocente');
-    }
+
 }

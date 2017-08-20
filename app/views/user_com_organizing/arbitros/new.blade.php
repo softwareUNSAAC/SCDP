@@ -32,18 +32,19 @@
                         <!-- BEGIN CONTENIDO DEL FORMULARIO -->
                         <div class="form-group">
                             <label>DNI</label>
-                            <input class="form-control" placeholder="49736548" name="dni" required maxlength="8">
+                            <input class="form-control" placeholder="ingrese el dni" name="dni" required maxlength="8" minlength="8">
                         </div>
                         <div class="form-group">
                             <label>Nombre</label>
-                            <input class="form-control" placeholder="Wilson" name="nombre" required>
+                            <input class="form-control" placeholder="ingrese el nombre del arbitro" name="nombre" required>
                         </div>
                         <div class="form-group">
                             <label>Apellidos</label>
-                            <input class="form-control" placeholder="Rimache Suarez" name="apellidos" required>
+                            <input class="form-control" placeholder="ingrese los apellidos del arbitro" name="apellidos" required>
                         </div>
+                            <!-- completar cuando ingresemos equipo -->
                         <div class="form-group">
-                            <label>Edad</label>
+                            <label>foto</label>
                             <input class="form-control" placeholder="24" name="edad" required>
                         </div>
                         <button type="submit" class="btn btn-primary">Guardar</button>

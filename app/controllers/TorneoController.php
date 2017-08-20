@@ -33,12 +33,12 @@ class TorneoController extends \BaseController {
     public function store()
     {
         $codcampeonato = Input::get('codcampeonato');
-        $respuesta = Torneo::crear(Input::all());
+        $respuesta = Torneo::crearinicio(Input::all());
         if($respuesta['error']==true)
         {
             return Redirect::back()->withErrors($respuesta['mensaje'])->withInput();
         }
-        return Redirect::to('torneo/'.$codcampeonato)->withErrors($respuesta['mensaje']);
+        return Redirect::back()->withErrors($respuesta['mensaje']);
     }
     /**
      * Display the specified resource.

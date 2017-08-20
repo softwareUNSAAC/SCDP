@@ -4,7 +4,7 @@ class Campeonato extends Eloquent
 {
     protected $table = 'tcampeonato';
     public $timestamps= false;
-    protected $primaryKey = 'codcampeonato';
-    protected $fillable = ['codcampeonato','nombre','anioacademico','fechacreacion','reglamento','estado','idcom_orgdor'];
+    protected $primaryKey = 'codCampeonato';
+    protected $fillable = ['codCampeonato','nombre','anioAcademico','fechaCreacion','reglamento','habilitar','codCom_Org'];
 
 }

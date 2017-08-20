@@ -11,11 +11,16 @@ class UsernormalController extends \BaseController {
 	{
             //AQUI VA TODOS LOS ELEMENTOS QUE APARECERAN EN LA PANTALLA 
             //DE INICIO SIN INICIAR SESION DE NINGUN TIPO :)
-            
+
+            $idcomision= Session::get('user_idcom_orgdor');
+            $campeonato=null;
+            if($idcomision){
+                $campeonato = Campeonato::where('codCom_Org','=',Session::get('user_idcom_orgdor'))->first();
+            }
             $tablaposiones = 'Wilson. aqui va el contenido de inico para todos los usuarios. '
                     . 'Ejemplo. la tabla de posiones falta mostrar :) este es un parametro desde el '
                     . 'controlador :)';
-            return View::make('user_normal.index')->with('tablaposiones', $tablaposiones);
+        return View::make('user_normal.index')->with('campeonato', $campeonato);
 	}
 
 

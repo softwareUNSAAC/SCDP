@@ -8,9 +8,19 @@
 @stop
 
 @section('nombrevista')
+
+    @if($campeonato)
+        {{"<h2>Bienvenido ". $campeonato->nombre."</h2>" }}
+    @else
     @lang('Bienvenido al Campeonato de Futbol Inter Docentes UNSAAC')
+    @endif
 @stop
 
 @section('contenido')
-    {{HTML::image('bg/campeonato.png','imagen uniforme',['class'=>'img-responsive','title'=>'uniforme','style'=>'width: 1000px'])}}
+    @if($campeonato)
+       {{" <a href='campeonato/detail/".$campeonato->codCampeonato."'</a>"}}
+       @endif
+
+             {{HTML::image('bg/campeonato.png','imagen uniforme',['class'=>'img-responsive','title'=>'uniforme','style'=>'width: 1000px'])}}
+
 @stop

@@ -6,7 +6,7 @@
 
 @section('rutanavegacion')
     <li><a href="{{ URL::to('/campeonato/listar');}}"><span class="glyphicon glyphicon-book"></span></a></li>
-    <li><a href="{{ URL::to('/campeonato/detail/'.$codcampeonato);}}">Detalle de Campeonato</a></li>
+    <li><a href="{{ URL::to('/campeonato/detail/'.$campeonato->codCampeonato);}}">Detalle de Campeonato</a></li>
     <li>Nueva configuracion</li>
 @stop
 
@@ -25,7 +25,7 @@
             <div class="panel-heading">Nueva configuracion  del campeonato</div>
             <div class="panel-body">
                 <div class="col-md-12">
-                    {{ Form::open(array('method' => 'POST','url'=>'campeonato/detail/'.$campeonato->codcampeonato.'/configuracionD/add.html','autocomplete'=>'off','class'=>'form_horizontal','role'=>'form'))}}
+                    {{ Form::open(array('method' => 'POST','url'=>'campeonato/detail/'.$campeonato->codCampeonato.'/configuracionD/add.html','autocomplete'=>'off','class'=>'form_horizontal','role'=>'form'))}}
 
                     <div class="row">
                         <!-- participantes-->

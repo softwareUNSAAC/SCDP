@@ -29,10 +29,9 @@
                     <strong class="primary-font">Estado: </strong><span class="text-primary">{{$campeonato->habilitar}}</span><br>
                 </div>
                 <div class="panel panel-footer">
-
+                    <a class="btn btn-info" href="{{'../'.$campeonato->codCampeonato.'/configuracion.html'}}">configuracion inicial</a>
                     <a class="btn btn-info" href="#equipos">Ver Equipos</a>
                     <a class="btn btn-info" href="#actividades">Actividades</a>
-                    <a class="btn btn-info" href="#configuracion">configuracion</a>
                     <a class="btn btn-info" href="#acta">acta de reuniones</a>
                     <div class="panel-tools pull-right">
                         <div class="form-inline">
@@ -43,7 +42,7 @@
                             {{Form::close()}}
                         </div>
                     </div>
-                </div>
+                </div
             </div>
         </div>
     </div>
@@ -89,50 +88,7 @@
         </div>
     </div>
     <br>
-    <div class="row row-no-gutter col-no-gutter-container" id="configuracion">
-            <div class="col-md-12 col-no-gutter">
-            <div class="panel panel-default">
-                <div class="panel-heading">configuracion
-                    <div class="panel-tools pull-right">
-                        <div class="form-inline">
-                            <div class="form-group">
-                                <?php
-                                $users = DB::table('tconfiguracion')->count();
-                                ?>
-                                @if($users==0)
-                                <a class="btn btn-info margin text-lowercase" type="button" href="{{$campeonato->codCampeonato}}/configuracion.html"><span class="glyphicon glyphicon-plus"></span>Configuracion inicial</a>
-                                @else
-                                <a class="btn btn-info margin text-lowercase" type="button" href="{{$campeonato->codCampeonato}}/configuracionD.html"><span class="glyphicon glyphicon-plus"></span>Agregar Configuracion</a>
-                                @endif
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="panel-body">
-                    <table data-toggle="table" data-url="tables/data2.json">
-                        <thead>
-                        <tr>
-                            <th>descripcion</th>
-                            <th>valor</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        @foreach($configuracion as $val)
-                            <tr>
-                                <td>{{$val->descripcion}}</td>
-                                <td>{{$val->valor}}</td>
-                            </tr>
-                        @endforeach
-                        </tbody>
-                    </table>
-                </div>
-                <div class="panel-footer">
-                    <a class="btn btn-success" href="#">Aceptar</a>
-                </div>
-            </div>
-        </div>
-    </div>
-    <br>
+
     <div class="row row-no-gutter col-no-gutter-container" id="acta">
         <div class="col-md-12 col-no-gutter">
             <div class="panel panel-default">

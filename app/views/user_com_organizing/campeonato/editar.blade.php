@@ -4,7 +4,20 @@
     @lang('Varapp.nombre_sistema_mediano')
 @stop
 
+<?php
 
+//fecha de actual
+$hoy = getdate();
+
+$dia=$hoy['mday'];
+$mes=$hoy['mon'];
+$anio=$hoy['year'];
+$fecha=$anio."-".$mes."-".$dia;
+
+
+
+
+?>
 @section('rutanavegacion')
     <li><a href="{{ URL::to('/campeonato/listar');}}"><span class="glyphicon glyphicon-book"></span></a></li>
     <li>Nuevo campeonato</li>
@@ -22,32 +35,20 @@
 					<div class="panel-heading">Modificar campeonato</div>
 					<div class="panel-body">
 						<div class="col-md-6">
-							  {{ Form::open(array('url' => 'campeonato/formulario2/'.$campeonato->codcampeonato,'method' => 'post', 'files' => true, 'class' => 'form-horizontal')) }}
+							  {{ Form::open(array('url' => 'campeonato/formulario2/'.$campeonato->codCampeonato,'method' => 'post', 'files' => true, 'class' => 'form-horizontal')) }}
 
 								<div class="form-group">
 									<label>Codigo</label>
-									<input class="form-control" placeholder="Codigo del campeonato" name="Codigo" value="{{$campeonato->codcampeonato}}">
+									<input class="form-control" placeholder="Codigo del campeonato" name="Codigo" value="{{$campeonato->codCampeonato}}" readonly="readonly" required>
 								</div>
 								<div class="form-group">
 									<label>Nombre</label>
 									<input class="form-control" placeholder="Nombre" name="Nombre" value="{{$campeonato->nombre}}">
 								</div>
-								<div class="form-group">
-									<label>Año Academico</label>
-									<input class="form-control" placeholder="2015-II" name="Anio" value="{{$campeonato->anioacademico}}">
-								</div>
 
 								<div class="form-group">
-
-
 									<label>Fecha creacion</label>
-									<input class="form-control" placeholder="05/05/2015" name="Fecha" value="{{$campeonato->fechacreacion}}">
-								</div>
-
-
-								<div class="form-group">
-									<label>Reglamento</label>
-									<textarea class="form-control" rows="3" name="reglamento">{{$campeonato->reglamento}}</textarea>
+									<input class="form-control" placeholder="05/05/2015" name="Fecha" value="{{$fecha}}" readonly="readonly" required>
 								</div>
 
 								<button type="submit" class="btn btn-primary">Guardar</button>
