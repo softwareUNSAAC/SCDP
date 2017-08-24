@@ -32,13 +32,10 @@
                 @if($fixturefechaexiste == '')
                     <a class="btn btn-primary" href="{{ URL::to('torneo/'.$codcampeonato.'/'.$torneo->codRueda.'/fixture.html');}}">Generar Fixture</a>
                 @endif
-
-
-                <a class="btn btn-primary" href="#fixture">Ver Fixture del {{$torneo->nombre}}</a>
                 <a class="btn btn-primary" href="#programacion">PROGRAMAR FECHAS {{$torneo->nombre}}</a>
                 <a class="btn btn-primary" href="#fixture">FECHAS {{$torneo->nombre}}</a>
-                @if($fixturefechaexiste == '')
-                <a class="btn btn-primary" href="´{{URL::to('partidosprogramados/'.$torneo->codRueda)}}">PARTIDOS PROGRAMADOS DEL   {{$torneo->nombre}}</a>
+                @if($fixturefechaexiste != '')
+                <a class="btn btn-primary" href="{{URL::to('partidosprogramados/'.$torneo->codRueda)}}">PARTIDOS PROGRAMADOS DEL   {{$torneo->nombre}}</a>
                 @endif
             </div>
         </div>

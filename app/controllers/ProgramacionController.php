@@ -29,10 +29,10 @@ class ProgramacionController extends \BaseController
         $fixture=Fixture::find($codfixture);
         $equipo1=$fixture->codEquipo1;
         $nombre1=Equipo::find($equipo1)->nombre;
-        $nombre1=substr($nombre1,0,3);
+        $nombre1=substr($nombre1,0,2);
         $equipo2=$fixture->codEquipo2;
         $nombre2=Equipo::find($equipo2)->nombre;
-        $nombre2=substr($nombre2,0,3);
+        $nombre2=substr($nombre2,0,2);
         $nrofecha=$fixture->nroFecha;
         $horaincio=$fixture->hora;
         $hora=substr($horaincio,0,2);
@@ -51,13 +51,16 @@ class ProgramacionController extends \BaseController
         $cop="PRO".$idfecha.($nro+1);
 
 
-
+        $nro1=DB::table('tpartido')
+            ->count();
         $partido=new Partido;
-        $cP="PA".$nombre1.$nombre2;
+        $cP="P".$nombre1.$nombre2.$nro1;
         $partido->codPartido=$cP;
         $partido->horaInicio=$horaincio;
         $partido->horaFin=$siguiente;
         $partido->tipoPartido="normal";
+        $partido->termino="-1";
+        $partido->resultado="-2";
         $partido->save();
 
 
@@ -72,6 +75,10 @@ class ProgramacionController extends \BaseController
         $programacion->razon="normal";
         $programacion->actual="1";
         $programacion->save();
+
+        $fix=Fixture::find($codfixture);
+        $fix->codPartido=$cP;
+        $fix->save();
 
         return Redirect::to('/fecha/edit/'.$codtorneo.'/'.$fixture->nroFecha);
 
@@ -205,4 +212,28 @@ class ProgramacionController extends \BaseController
 
     }
 
+
+
+    public function partidosProgramados($idtorneo)
+    {
+
+
+        $fecha=Fechas::where('codRueda','=',$idtorneo)->get();
+
+        $fixture=DB::table('tfixture')
+            ->join('tpartido', 'tfixture.codPartido', '=', 'tpartido.codPartido')
+            ->join('tprogramacion','tpartido.codPartido','=', 'tprogramacion.codPartido')
+            ->select('tfixture.codFixture as fixture', 'tpartido.codPartido as codpartido','tprogramacion.codProgramacion as programacion')
+            ->where('tfixture.codRueda','=',$idtorneo)
+            ->where('tpartido.termino','<>','0')
+            ->where('tprogramacion.actual','=','1')
+            ->whereNotNull('tfixture.codPartido')->orderBY('tprogramacion.diaPartido', 'ASC')->get();
+
+
+
+        return View::make('user_com_organizing.fecha.partido.partidoPro')
+            ->with('fixture',$fixture)
+            ->with('fecha',$fecha)
+            ->with('idtorneo',$idtorneo);
+    }
 }

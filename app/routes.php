@@ -264,7 +264,7 @@ Route::group(array('before'=>'organ'), function()
 
             //partidosprogramados
 
-             Route::get('/partidosprogramados/{id}', 'ProgramacionController@post_reprogramar');
+             Route::get('/partidosprogramados/{id}', 'ProgramacionController@partidosProgramados');
 
             Route::post('fecha/edit/{id}/{id2}/programacioPartido/{id3}', 'ProgramacionController@editpartido_post');
 
