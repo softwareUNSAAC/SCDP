@@ -73,9 +73,9 @@
     <div class="modal-footer">
         <footer class="main-footer">
             <div class="pull-right hidden-xs">
-                <b> Versión</b> 3.3
+                <b> Versión</b> 3.4
             </div>
-            <strong>Copyright &copy; UNSAAC-2016 Wilson RS y Percy CA . </strong> All rights reserved.
+            <strong>Copyright &copy; UNSAAC-2017  y Percy CA . </strong> All rights reserved.
         </footer>
     </div>
         

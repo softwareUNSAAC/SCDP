@@ -60,7 +60,7 @@ class FechasController extends \BaseController
             ->with('idcampeonato',$idcampeonato)
             ->with('fixture',$fixture);
     }
-    public function add($idcampeonato,$idtorneo)
+    public function add($idtorneo)
     {
         $input = Input::all();
         $rules = array(
@@ -74,137 +74,70 @@ class FechasController extends \BaseController
         }
         else
         {
-            $nrofecha = Input::get('nrofecha');
-            //recuperamos la fecha ingresada y lo acomodamos para ingresar a la base de datos
-            $fecha = Input::get('fecha');
-            /*
-            $mes = substr($fecha,0,2);
-            $dia = substr($fecha,3,2);
-            $año = substr($fecha,6,4);
-            $fecha = $año.'-'.$mes.'-'.$dia;
-            */
-            $horaincio = Input::get('horainicio');
-            $lugar=input::get('lugar');
-            $hora=substr($horaincio,0,2);
-            $min=substr($horaincio,3,2);
-            $horaI=(int)$hora;
-            $minI=(int)$min;
+            $tor=Torneo::find($idtorneo);
+            $fecha=$tor->fechaCreacion;
+            $flag=strcmp($fecha,Input::get('fecha'));
 
-            $fixturefecha=Fixture::where('nroFecha','=',$nrofecha)->where('codRueda','=',$idtorneo)->get();;
-            $i=1;
-            $siguiente=$horaI.":".$minI;
-            foreach( $fixturefecha as $value)
-            {
-                $value->hora=$siguiente;
-                $value->nropartido=$i;
-                $value->save();
-                $mas=0;
-                $minI=$minI+30;
-                if($minI>=60)
-                {
-                    $mas=1;
-                    $minI=$minI % 60;
+            if($flag==-1) {
+                $nrofecha = Input::get('nrofecha');
+                //recuperamos la fecha ingresada y lo acomodamos para ingresar a la base de datos
+                $fecha = Input::get('fecha');
+                /*
+                $mes = substr($fecha,0,2);
+                $dia = substr($fecha,3,2);
+                $año = substr($fecha,6,4);
+                $fecha = $año.'-'.$mes.'-'.$dia;
+                */
+                $horaincio = Input::get('horainicio');
+                //$lugar=input::get('lugar');
+                $hora = substr($horaincio, 0, 2);
+                $min = substr($horaincio, 3, 2);
+                $horaI = (int)$hora;
+                $minI = (int)$min;
+
+                $fixturefecha = Fixture::where('nroFecha', '=', $nrofecha)->where('codRueda', '=', $idtorneo)->get();;
+                $i = 1;
+                $siguiente = $horaI . ":" . $minI;
+                foreach ($fixturefecha as $value) {
+                    $value->hora = $siguiente;
+                    $value->nropartido = $i;
+                    $value->save();
+                    $mas = 0;
+                    $minI = $minI + 30;
+                    if ($minI >= 60) {
+                        $mas = 1;
+                        $minI = $minI % 60;
+                    }
+                    $horaI = $horaI + 1 + $mas;
+                    $siguiente = $horaI . ":" . $minI;
+                    $i++;
                 }
-                $horaI=$horaI+1+$mas;
-                $siguiente=$horaI.":".$minI;
-                $i++;
+
+                $category = new Fechas();
+                $users = DB::table('tfecha')->count();
+                $users++;
+                $users1 = substr($idtorneo, 3, strlen($idtorneo));
+                $aux = Torneo::find($idtorneo)->nombre;
+                $aux = substr($aux, 0, 3);
+
+                $codasistente = (int)$aux . $users;
+                $category->idFecha = $codasistente;
+                $category->nroFecha = $nrofecha;
+                $category->diaFecha = $fecha;
+                $category->Observaciones = "";
+                $category->codRueda = $idtorneo;
+                $category->save();
+
+                return Redirect::to('fecha/edit/' . $idtorneo . '/' . $nrofecha);
             }
-
-            $category = new Fechas();
-            $users = DB::table('tfecha')->count();
-            $users++;
-            $users1=substr($idtorneo,3,strlen($idtorneo));
-            $codasistente=(int)$users1.$users;
-            $category->idFecha=$codasistente;
-            $category->nroFecha = $nrofecha;
-            $category->diaFecha = $fecha;
-            $category->codRueda=$idtorneo;
-            $category->save();
-
-            return Redirect::to('fecha/edit/'.$idcampeonato.'/'.$idtorneo.'/'.$nrofecha);
+            else{
+                $error = ['wilson' => ' fecha  incorrecta'];
+                return Redirect::back()->withInput()->withErrors($error);
+                }
         }
     }
     
-    
-	/**
-	 * Display a listing of the resource.
-	 *
-	 * @return Response
-	 */
-	public function index()
-	{
-		//
-	}
 
-
-	/**
-	 * Show the form for creating a new resource.
-	 *
-	 * @return Response
-	 */
-	public function create()
-	{
-		//
-	}
-
-
-	/**
-	 * Store a newly created resource in storage.
-	 *
-	 * @return Response
-	 */
-	public function store()
-	{
-		//
-	}
-
-
-	/**
-	 * Display the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function show($id)
-	{
-		//
-	}
-
-
-	/**
-	 * Show the form for editing the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function edit($id)
-	{
-		//
-	}
-
-
-	/**
-	 * Update the specified resource in storage.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function update($id)
-	{
-		//
-	}
-
-
-	/**
-	 * Remove the specified resource from storage.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function destroy($id)
-	{
-		//
-	}
 
     public  function detail($codcampeonato,$idtorneo,$idfecha)
     {
@@ -232,4 +165,16 @@ class FechasController extends \BaseController
             ->with('equipoquedescansa',$equipoquedescansa)
             ->with('codcampeonato',$codcampeonato);
     }
+
+    public function programarfecha($idtorneo,$nrofecha)
+    {
+
+        $torneo = Torneo::where('codRueda','=',$idtorneo)->first();
+        $fixture=Fixture::where('codRueda','=',$idtorneo)->where('nroFecha','=',$nrofecha)->get();
+        return View::make('user_com_organizing.fecha.actualizar')
+            ->with('torneo',$torneo)
+            ->with('nrofecha',$nrofecha)
+            ->with('fixture',$fixture);
+    }
+
 }

@@ -27,20 +27,19 @@
             <div class="panel panel-footer">
                 <a class="btn btn-danger" href="#posiciones">Tabla de posiciones</a>
 
-                <?php $fixturefechaexiste=Fixture::where('codRueda','=',$torneo->codRueda)->first();?>
+                <?php $fixturefechaexiste=Fixture::where('codRueda','=',$torneo->codRueda)->first();
+                $fixture=Fixture::where('codRueda','=',$torneo->codRueda)->get();?>
                 @if($fixturefechaexiste == '')
-                    <a class="btn btn-primary" href="{{ URL::to('torneo/detail/'.$codcampeonato.'/'.$torneo->codRueda.'/fixture.html');}}">Generar Fixture</a>
+                    <a class="btn btn-primary" href="{{ URL::to('torneo/'.$codcampeonato.'/'.$torneo->codRueda.'/fixture.html');}}">Generar Fixture</a>
                 @endif
 
 
                 <a class="btn btn-primary" href="#fixture">Ver Fixture del {{$torneo->nombre}}</a>
-                {{Form::open(array('method' => 'POST', 'url' => '/torneo/'.$codcampeonato.'/'.$torneo->codRueda.'/agregarE', 'role' => 'form'))}}
-
-                <div class="form-group">
-                    <p>{{Form::submit('agregar equipos a torneo', array('class' => 'btn btn-primary'))}}</p>
-                </div>
-
-                {{Form::close()}}
+                <a class="btn btn-primary" href="#programacion">PROGRAMAR FECHAS {{$torneo->nombre}}</a>
+                <a class="btn btn-primary" href="#fixture">FECHAS {{$torneo->nombre}}</a>
+                @if($fixturefechaexiste == '')
+                <a class="btn btn-primary" href="´{{URL::to('partidosprogramados/'.$torneo->codRueda)}}">PARTIDOS PROGRAMADOS DEL   {{$torneo->nombre}}</a>
+                @endif
             </div>
         </div>
     </div>
@@ -145,6 +144,26 @@
 
                     </div>
                     <?php }?>
+
+                        <div class="panel panel-info" id="programacion">
+                            <div class="panel-heading">
+                                programacion de las fechas
+                            </div>
+                            <div class="panel-body">
+                                <?php
+                                for($i=0;$i<$nrofechas;$i++){?>
+                                    <?php $valor=$i+1?>
+                                    <div class="col-xs-2">
+                                        <a href="<?php echo URL::to('/fecha/edit/'.$torneo->codRueda.'/'.$valor)?>" class="btn btn-primary btn-lg" role="button"><?php echo "fecha ".$valor?></a>
+                                    </div>
+                                    <?php }?>
+                            </div>
+                            <div class="panel-footer">
+                                <a  href=""><label class="glyphicon glyphicon-arrow-up btn btn-success btn-circle"></label></a>
+                            </div>
+                        </div>
+
+
                 </div>
             </div>
             <div class="panel-footer">
@@ -152,7 +171,8 @@
             </div>
         </div>
     </div>
+
+@endsection
 @section ('scrips')
     <script src="{{asset('/js/bootstrap-table.js')}}"></script>
 @stop
-@endsection

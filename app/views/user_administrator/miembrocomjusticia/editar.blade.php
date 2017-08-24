@@ -9,6 +9,9 @@
 @stop
 
 @section('rutanavegacion')
+    <li><a href="{{ URL::to( '/campeonato/detail/'.$codcampeonato);}}"><span > detalle campenato</span></a></li>
+    <li><a href="{{ URL::to( 'campeonato/'.$codcampeonato.'/miembro.html'.$codcampeonato);}}"><span > lista de miembros</span></a></li>
+
 @stop
 
 @section('nombrevista')
@@ -23,7 +26,7 @@
                 <div class="panel-body">
 
                     <div class="col-md-7 col-sm-8">
-                        {{ Form::open(array('url'=>'miembrocomjusticia/formulario2/'.$consultatabla->dni,'autocomplete'=>'off','class'=>'form_horizontal','role'=>'form'))}}
+                        {{ Form::open(array('url'=>'campeonato/'.$codcampeonato.'/'.$consultatabla->dni.'/miembro/edit.html','autocomplete'=>'off','class'=>'form_horizontal','role'=>'form'))}}
 
                         <!-- BEGIN PARA MANEJO DE ERRORES -->
                         @if (count($errors) > 0)
@@ -63,14 +66,6 @@
                             <div class="form-group">
                                 <label>Apellido Materno</label>
                                 <input class="form-control" value="{{$consultatabla->apellidoM}}" placeholder="Perez" name="apellidomaterno" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Campeonato</label>
-                                <select  class="form-control" name="campeonato">
-                                    @foreach( $camptodo as $val)
-                                        <option class="form-control" value="{{$val->codCampeonato}}"> {{$val->nombre}} </option>
-                                    @endforeach
-                                </select>
                             </div>
                             <button type="submit" class="btn btn-primary">Guardar</button>
                             <button type="reset" class="btn btn-default">Cancelar</button>

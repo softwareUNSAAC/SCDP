@@ -7,10 +7,28 @@ class MiembroComJusticiaController extends \BaseController {
 	 *
 	 * @return Response
 	 */
-	public function index()
+
+    public function comis(){
+        $users = Comision::where('codCom_Org', '=', Session::get('user_idcom_orgdor'))->first();
+
+        $user = substr($users->codCom_Org, 3, 7);
+        $tmp = substr($user, 0, 1);
+
+        while ($tmp == "0") {
+
+            $user = substr($user, 1, strlen($user) - 1);
+            $tmp = substr($user, 0, 1);
+        }
+
+        $numero = (int)$user;
+        return $numero;
+    }
+	public function index($codcampeonato)
 	{
-		$todomiembros = MiembroComJusticia::paginate(2);
-        return View::make('user_administrator.miembrocomjusticia.listar')->with('todomiembros',$todomiembros);
+		$todomiembros = MiembroComJusticia::where('codCampeonato',$codcampeonato)->paginate(3);
+
+        return View::make('user_administrator.miembrocomjusticia.listar')->with('todomiembros',$todomiembros)
+            ->with('codcampeonato',$codcampeonato);
 	}
 
 
@@ -25,10 +43,9 @@ class MiembroComJusticiaController extends \BaseController {
         return View::make('campeonato.insertar');
 	}*/
 
-	public function insertarmiembro()
+	public function insertarmiembro($codcampeonato)
 	{
-        $camptodo = Campeonato::all();
-        return View::make('user_administrator.miembrocomjusticia.insertar')->with('camptodo',$camptodo);;
+        return View::make('user_administrator.miembrocomjusticia.insertar')->with('codcampeonato',$codcampeonato);
 	}
 
 
@@ -37,21 +54,22 @@ class MiembroComJusticiaController extends \BaseController {
 	 *
 	 * @return Response
 	 */
-	public function store()
+	public function store($codcampeonato)
 	{
         //verificamos que el docente exista
         $iddocente =Input::get('docente');
         if(!$docente = MiembroComJusticia::where('dni', '=', $iddocente)->first())
         {
+
             $miembro = new MiembroComJusticia;
             $miembro->dni=$iddocente;
             $miembro->rol = Input::get('rol');
             $miembro->nombre=Input::get('nombre');
             $miembro->apellidoP=Input::get('apellidopaterno');
             $miembro->apellidoM=Input::get('apellidomaterno');
-            $miembro->codCampeonato = Input::get('campeonato');
+            $miembro->codCampeonato = $codcampeonato;
             $miembro->save();
-            return Redirect::to('miembrocomjusticia/listar');
+            return Redirect::to('campeonato/'.$codcampeonato.'/miembro.html');
         }
         else
         {
@@ -79,13 +97,12 @@ class MiembroComJusticiaController extends \BaseController {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function editarmiembro($id)
+	public function editarmiembro($codcampeonato,$id)
 	{
         $consultatabla = MiembroComJusticia::find($id);
-        $camptodo = Campeonato::all();
 		return View::make('user_administrator.miembrocomjusticia.editar')
             ->with('consultatabla',$consultatabla)
-            ->with('camptodo',$camptodo);
+            ->with('codcampeonato',$codcampeonato);
 	}
 
 
@@ -95,13 +112,12 @@ class MiembroComJusticiaController extends \BaseController {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function update($id)
+	public function update($id0,$id)
 	{
 
         //verificamos que el docente exista
         $iddocente = Input::get('docente');
-        if($docente = MiembroComJusticia::where('dni', '=', $iddocente)->first())
-        {
+
             $datosformulario = Input::all();
             DB::table('tmiembrojusticia')
                 ->where('dni', $id)
@@ -110,10 +126,9 @@ class MiembroComJusticiaController extends \BaseController {
                     'nombre' => $datosformulario['nombre'],
                     'apellidoP' => $datosformulario['apellidopaterno'],
                     'apellidoM' => $datosformulario['apellidomaterno'],
-                    'codCampeonato' => $datosformulario['campeonato'],
                     ));
-            return Redirect::to('miembrocomjusticia/listar');
-        }
+        return Redirect::to('campeonato/'.$id0.'/miembro.html');
+
 
 	}
 
@@ -128,12 +143,12 @@ class MiembroComJusticiaController extends \BaseController {
 	{
 		//
 	}
-	public function delete($id)
+	public function delete($id0,$id)
 	{
         DB::table('tmiembrojusticia')
             ->where('dni', $id)
             ->delete();
-        return Redirect::to('miembrocomjusticia/listar');
+        return Redirect::to('campeonato/'.$id0.'/miembro.html');
 	}
 
 public function find()

@@ -3,7 +3,7 @@ class MovimientoController extends BaseController
 {
 	public function index()
 	{
-		$movimientos = Movimiento::where('idcom_orgdor','=',Session::get('user_idcom_orgdor'))->paginate(10);
+		$movimientos = Movimiento::where('codCom_Org','=',Session::get('user_idcom_orgdor'))->paginate(10);
 		$ingesototal = Movimiento::where('tipo','=','ingreso')->sum('montototal');
 		$egresototal = Movimiento::where('tipo','=','egreso')->sum('montototal');
         $saldototal = $ingesototal - $egresototal;

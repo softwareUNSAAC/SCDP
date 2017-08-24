@@ -7,6 +7,21 @@ class TorneoController extends \BaseController {
      *
      * @return Response
      */
+    public function comis(){
+        $users = Comision::where('codCom_Org', '=', Session::get('user_idcom_orgdor'))->first();
+
+        $user = substr($users->codCom_Org, 3, 7);
+        $tmp = substr($user, 0, 1);
+
+        while ($tmp == "0") {
+
+            $user = substr($user, 1, strlen($user) - 1);
+            $tmp = substr($user, 0, 1);
+        }
+
+        $numero = (int)$user;
+        return $numero;
+    }
     public function index()
     {
 
@@ -192,7 +207,7 @@ class TorneoController extends \BaseController {
     }
     function coordinar($campeonato)
     {
-        $todopartido=Equipo::where('estado', '=', 'habilitado')->get();
+        $todopartido=Equipo::where('estado', '=', 'habilitado')->where('codCampeonato', '=', $campeonato)->get();
         //$todopartido=Equipoxtorne::where('estado', '=', 'habilitado')->get();
         $nro=$this->nroequipos($campeonato);
         $nro1=0;
@@ -310,6 +325,8 @@ class TorneoController extends \BaseController {
         if($nro % 2!=0)
             $nro=$nro+1;
         $k=0;
+        $campe="00:00:00";
+        $datos=(string)$this->comis();
         for($i =0;$i<$nro-1;$i++){
 
             for($j =0; $j<$nro/2;$j++){
@@ -317,11 +334,10 @@ class TorneoController extends \BaseController {
                 $p=$this->obtener1($vs);
                 $s=$this->obtener2($vs);
                 $countfixture=DB::table('tfixtureaux')->count();
-                $codFixture=substr($idtorneo,3,strlen($idtorneo));;
                 $rueda = new Fixtureaux;
-                $rueda->codFixture="FIX".$codFixture.($countfixture+1);
+                $rueda->codFixture="FIX".$datos.($countfixture+1);
                 $rueda->nroFecha = $i+1;
-
+                $rueda->hora=$campe;
                 $uno=$rueda->codEquipo2 =$this->obtenercodigo($arr,$s);
                 $dos=$rueda->codEquipo1 =$this->obtenercodigo($arr,$p);
                 //$rueda->equipo2 =$this->obtenercodigo($arr,$s);
@@ -361,7 +377,7 @@ class TorneoController extends \BaseController {
                 $nuevo->save();
             }
         }
-        return Redirect::to('torneo/'.$idtorneo.'/'.$idcampeonato.'/detail.html');
+        return Redirect::to('torneo/'.$idcampeonato.'/'.$idtorneo.'/detail.html');
     }
 
 
@@ -398,11 +414,6 @@ class TorneoController extends \BaseController {
             ->with('torneo', $torneo)
            // ->with('tabla', $tabla)
             ->with('nroequipos', $nroequipos);
-
-
-
-
-
 
 
 

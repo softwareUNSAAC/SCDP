@@ -58,8 +58,9 @@
         </div>
     </div>
 
-@section ('scrips')
-@stop
+p
 
 @endsection
+@section ('scrips')
+@stop
 

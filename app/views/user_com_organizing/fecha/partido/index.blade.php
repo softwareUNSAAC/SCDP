@@ -120,7 +120,8 @@
         </div>
     </div>
 
+
+@endsection
 @section ('scrips')
     <script src="{{asset('/js/bootstrap-table.js')}}"></script>
 @stop
-@endsection

@@ -9,7 +9,9 @@
 @stop
 
 @section('rutanavegacion')
-    <li><a href="{{ URL::to( 'usuariocrear');}}"><span > nuevo administrador</span></a></li>
+    <li><a href="{{ URL::to( '/campeonato/detail/'.$codcampeonato);}}"><span > detalle campenato</span></a></li>
+    <li><a href="{{ URL::to( 'campeonato/'.$codcampeonato.'/miembro.html'.$codcampeonato);}}"><span > lista de miembros</span></a></li>
+
 @stop
 
 @section('nombrevista')
@@ -24,7 +26,7 @@
                 <div class="panel-body">
 
                     <div class="col-xs-7 col-md-7 col-sm-8">
-                        {{ Form::open(array('url'=>'miembrocomjusticia/formulario1','autocomplete'=>'off','class'=>'form_horizontal','role'=>'form'))}}
+                        {{ Form::open(array('url'=>'campeonato/'.$codcampeonato.'/miembro/add.html','autocomplete'=>'off','class'=>'form_horizontal','role'=>'form'))}}
 
                         <!-- BEGIN PARA MANEJO DE ERRORES -->
                         @if (count($errors) > 0)
@@ -45,36 +47,28 @@
                             <!-- BEGIN CONTENIDO DEL FORMULARIO -->
 
                             <div class="form-group">
-                                {{Form::label('lbldocente','Docente:')}}
-                                {{Form::text('docente','',['class'=>'form-control','placeholder'=>'ingrese dni','maxlength'=>'8'])}}
+                                {{Form::label('lbldocente','dni:')}}
+                                {{Form::text('docente','',['class'=>'form-control','placeholder'=>'ingrese dni','maxlength'=>'8','minlength'=>'8'])}}
                             </div>
 
                             <div class="form-group">
                                 <label>Rol</label>
                                 <br>
-                                {{Form::select('rol',['Presitente'=>'Presitente','Secretario'=>'Secretario'],null,['class'=>'form-control-static label-success'])}}
+                                {{Form::select('rol',['Presitente'=>'Presitente','Secretario'=>'Secretario','miembro'=>'miembro'],null,['class'=>'form-control-static label-success'])}}
                             </div>
                             <div class="form-group">
                                 <label>Nombre</label>
-                                <input class="form-control" placeholder="Juan" name="nombre" required>
+                                <input class="form-control" placeholder="ingrese el nombre" name="nombre" required>
                             </div>
                             <div class="form-group">
                                 <label>Apellido Paterno</label>
-                                <input class="form-control" placeholder="Perez" name="apellidopaterno" required>
+                                <input class="form-control" placeholder="ingrese apellido paterno" name="apellidopaterno" required>
                             </div>
                             <div class="form-group">
                                 <label>Apellido Materno</label>
-                                <input class="form-control" placeholder="Perez" name="apellidomaterno" required>
+                                <input class="form-control" placeholder="ingrese apellido materno" name="apellidomaterno" required>
                             </div>
-                            <div class="form-group">
-                                <label>Campeonato</label>
-                                <br>
-                                <select  class="form-control-static label-success" name="campeonato">
-                                    @foreach( $camptodo as $val)
-                                        <option class="form-control" value="{{$val->codCampeonato}}">{{$val->codCampeonato}} {{$val->nombre}} </option>
-                                    @endforeach
-                                </select>
-                            </div>
+
                             <button type="submit" class="btn btn-primary">Guardar</button>
                             <button type="reset" class="btn btn-default">Limpiar</button>
                             <!-- END CONTENIDO DEL FORMULARIO -->

@@ -28,10 +28,12 @@
                     <strong class="primary-font">Fecha de creacion: </strong><span class="text-primary">{{$campeonato->fechaCreacion}}</span><br>
                     <strong class="primary-font">Estado: </strong><span class="text-primary">{{$campeonato->habilitar}}</span><br>
                 </div>
+
                 <div class="panel panel-footer">
                     <a class="btn btn-info" href="{{'../'.$campeonato->codCampeonato.'/configuracion.html'}}">configuracion inicial</a>
-                    <a class="btn btn-info" href="#equipos">Ver Equipos</a>
-                    <a class="btn btn-info" href="#actividades">Actividades</a>
+                    <a class="btn btn-info" href="{{'../'.$campeonato->codCampeonato.'/actividad.html'}}">cronograma</a>
+                    <a class="btn btn-info" href="{{'../'.$campeonato->codCampeonato.'/equipo.html'}}">crear equipo</a>
+                    <a class="btn btn-info" href="{{'../'.$campeonato->codCampeonato.'/miembro.html'}}">comision de justicia</a>
                     <a class="btn btn-info" href="#acta">acta de reuniones</a>
                     <div class="panel-tools pull-right">
                         <div class="form-inline">
@@ -42,7 +44,7 @@
                             {{Form::close()}}
                         </div>
                     </div>
-                </div
+                </div>
             </div>
         </div>
     </div>
@@ -251,7 +253,8 @@
         </div>
     </div>
 
+
+@endsection
 @section ('scrips')
     <script src="{{asset('/js/bootstrap-table.js')}}"></script>
 @stop
-@endsection

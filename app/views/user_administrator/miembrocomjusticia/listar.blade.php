@@ -5,6 +5,7 @@
 @stop
 
 @section('rutanavegacion')
+    <li><a href="{{ URL::to( '/campeonato/detail/'.$codcampeonato);}}"><span > detalle campenato</span></a></li>
 
 @stop
 
@@ -22,7 +23,9 @@
                     <div class="form-inline">
                         {{ Form::open(array('url' => '#','method' => 'post')) }}
                         <div class="form-group">
-                            <a class="btn btn-default margin text-lowercase" type="button" href="{{ URL::to( 'miembrocomjusticiainsertar');}}"><span class="glyphicon glyphicon-plus"></span> Add New</a>
+                            <a class="btn btn-default margin text-lowercase" type="button" href="{{ URL::to( 'campeonato/'.$codcampeonato.'/miembroadd.html');}}">
+                                <span class="glyphicon glyphicon-plus"></span> agregar nuevo miembro
+                            </a>
 
                         </div>
                         {{Form::close()}}
@@ -48,9 +51,8 @@
                             <td>{{$camp->rol}}</td>
                             <td>{{$camp->dataCampeonato[0]->nombre}}</td>
                             <td>
-                                <a class="label label-primary" href="{{ URL::to('miembrocomjusticiaeditar'.$camp->dni);}}" ><span class="glyphicon glyphicon-edit"></span> &nbsp;Edit</a>
-                                <a class="label label-success" href="#" ><span class="glyphicon glyphicon-list"></span> &nbsp;Detail</a>
-                                <a class="label label-danger" href="eliminar/{{ $camp->dni}}" ><span class="glyphicon glyphicon-trash"></span> &nbsp;Delete</a>
+                                <a class="label label-primary" href="{{ URL::to('campeonato/'.$codcampeonato.'/'.$camp->dni.'/miembroedit.html');}}" ><span class="glyphicon glyphicon-edit"></span> &nbsp;Edit</a>
+                                <a class="label label-danger" href="{{ URL::to('campeonato/'.$codcampeonato.'/'.$camp->dni.'/miembro/delete.html');}}" ><span class="glyphicon glyphicon-trash"></span> &nbsp;Delete</a>
                             </td>
                         </tr>
                     @endforeach

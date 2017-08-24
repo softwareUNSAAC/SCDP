@@ -7,6 +7,21 @@ class CampeonatoController extends \BaseController {
 	 *
 	 * @return Response
 	 */
+	public function comis(){
+        $users = Comision::where('codCom_Org', '=', Session::get('user_idcom_orgdor'))->first();
+
+        $user = substr($users->codCom_Org, 3, 7);
+        $tmp = substr($user, 0, 1);
+
+        while ($tmp == "0") {
+
+            $user = substr($user, 1, strlen($user) - 1);
+            $tmp = substr($user, 0, 1);
+        }
+
+        $numero = (int)$user;
+        return $numero;
+    }
 	public function index()
 	{
 		$todocampeonato = Campeonato::where('codCom_Org','=',Session::get('user_idcom_orgdor'))->paginate(3);
@@ -63,33 +78,36 @@ class CampeonatoController extends \BaseController {
 
 	public function  actividad($codcampeonato)
     {
-        $campeonato = Campeonato::where('codCampeonato','=',$codcampeonato)->first();
+        $Actividades = Actividad::where('codCampeonato','=',$codcampeonato)->get();
         return  View::make('user_com_organizing.campeonato.actividad')
         ->with('codcampeonato',$codcampeonato)
-        ->with('campeonato',$campeonato);
+        ->with('Actividades',$Actividades);
 
     }
-    public function crearcodactividad($id)
+    public function crearcodactividad()
     {
+        $numero = $this->comis();
         $users = DB::table('tactividad')->count();
         $users++;
-        return  "ACT0".$id."0".$users;
+        return  "ACT".$numero."0".$users;
     }
     public function addacti($id)
     {
 
         $acti1=new Actividad();
-        $acti1->codActividad=$this->crearcodactividad($id);
+        $acti1->codActividad=$this->crearcodactividad();
         $acti1->actividad=Input::get('actividad');
         $acti1->fechaInicio=Input::get('fechaI');
-        $acti1->fechaFin=Input::get('fechaf');
-        $acti1->observaciones=Input::get('observacion');;
+        $acti1->fechaFin=Input::get('fechaF');
+        $acti1->observaciones=Input::get('obser');;
         $acti1->codCampeonato=$id;
         $acti1->save();
         return Redirect::to('campeonato/detail/'.$id);
     }
     public function crearcoodconfig($id)
     {
+
+
         $users = DB::table('tconfiguracion')->count();
         $users++;
         return  "COF0".$id."0".$users;
@@ -469,6 +487,100 @@ class CampeonatoController extends \BaseController {
     }
 
 
+
+    public function equipo($id){
+
+        $equipos = Equipo::where('codCampeonato','=',$id)->count();
+
+        $equipos++;
+        $cadena="EQU".$this->comis().$equipos;
+
+        $delegados=Delegado::where('codEquipo','=',$cadena)->get();
+        $campeonato=$id;
+        return  View::make('user_com_organizing.equipo.crearequipo')->with('campeonato',$campeonato)
+            ->with('cadena',$cadena)
+            ->with('delegados',$delegados);
+
+    }
+
+    public function crearequipo($id){
+        $users = Comision::where('codCom_Org', '=', Session::get('user_idcom_orgdor'))->first();
+        $nombreE=Input::get('nombre');
+        $coddocente = substr(Input::get('Nombre'), 0,6);
+
+
+        $codigoE=Input::get('cadena');
+
+        if($data=Equipo::find($codigoE)){
+            //codelegados
+            $error = ['wilson' => '1'];
+            return Redirect::back()->withInput()->withErrors($error);
+        }
+
+        else {
+            if ($data1 = User::where('username', '=', $coddocente)->first()) {
+                $error = ['wilson' => '2'];
+                return Redirect::back()->withInput()->withErrors($error);
+            } else {
+                if ($data2 = Equipo::where('nombre', '=', $nombreE)->first())
+
+                {
+                    $error = ['wilson' => '3'];
+                    return Redirect::back()->withInput()->withErrors($error);
+                }
+                else {
+                    $nro=User::max('idUsuario');
+                    $nro++;
+                    $password = Hash::make($coddocente);
+                    $newusuario= new User;
+                    $newusuario->idUsuario=$nro;
+                    $newusuario->username=$coddocente;
+                    $newusuario->password=$password;
+                    $newusuario->tipo="equipo";
+                    $newusuario->estado="desactivo";
+                    $newusuario->save();
+
+                    $newequipo=new Equipo();
+                    $newequipo->nombre=$nombreE;
+                    $newequipo->codEquipo=$codigoE;
+                    $newequipo->coloresUniforme=Input::get('colores');
+                    $newequipo->coloresAlternos=Input::get('coloresA');
+                    if(Input::hasFile('logo'))//hay foto
+                    {
+                        $fullnamefile = $nombreE;
+                        $file = Input::file('logo');
+                        $extension = $file->getClientOriginalExtension();
+                        $namefotocomplete = $fullnamefile.'.'.$extension;
+                        $file->move('storage/equipo/camiseta', $namefotocomplete);
+
+                    }
+                    else
+                    {
+                        $error = ['wilson'=>'Seleccione una foto'];
+                        return Redirect::back()->withInput()->withErrors($error);
+                    }
+                    $newequipo->logo=$namefotocomplete;
+                    $newequipo->estado="habilitado";
+                    $newequipo->idUsuario=$nro;
+                    $newequipo->codCampeonato=$id;
+                    $newequipo->save();
+
+                    $newdelegado=new Delegado();
+                    $newdelegado->dni=$coddocente;
+                    $newdelegado->codDocente=$coddocente;
+                    $newdelegado->rol=Input::get('rol');
+                    $newdelegado->codEquipo=$codigoE;
+                    $newdelegado->estado="habilitado";
+                    $newdelegado->save();
+                    return Redirect::back();
+
+                }
+
+
+            }
+        }
+
+    }
 
 
 }

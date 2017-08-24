@@ -32,6 +32,8 @@
             <div class="panel-heading"><span class="glyphicon glyphicon-info-sign"></span> Programacion de partido: </div>
             <div class="panel-body">
                 <strong class="primary-font">partido: </strong><span class="text-primary">{{Equipo::find(Fixture::find($codfixture)->codEquipo1)->nombre. " vs " .Equipo::find(Fixture::find($codfixture)->codEquipo2)->nombre }}</span><br>
+                <strong class="primary-font">fecha de partido: <span class="text-primary">{{ $fecha->diaFecha }}</span></strong><br>
+                <strong class="primary-font">hora programada: <span class="text-primary">{{ Fixture::find($codfixture)->hora }}</span></strong>
             </div>
 
         </div>
@@ -54,14 +56,18 @@
                 <div class="row">
                     <div class="col-md-6">
 
-                        {{Form::open(array('method' => 'POST', 'url' => 'fecha/edit/'.$codcampeonato.'/'.$codtorneo.'/programacioPartido/'.$codfixture,'autocomplete'=>'off','class'=>'form_horizontal','role'=>'form'))}}
-                        <div class="form-group" >
-                            {{Form::label('lblescenario','Escenario')}}
-                            {{Form::select('escenario',$arr,$arr["ESC0001"],['class'=>'form-control','placeholder'=>'ingrese escenario','id'=>'autoescenario'])}}
-                        </div>
+
+                        {{Form::open(array('method' => 'POST', 'url' => '/addprogramacion/'.$codfixture,'autocomplete'=>'off','class'=>'form-horizontal','role'=>'form'))}}
+
+
+                            {{Form::hidden('codtorneo',$codtorneo)}}
+                            <div class="form-group" >
+                                {{Form::label('lblescenario','Escenario')}}
+                                {{Form::select('escenario',$arr,$arr["ESC0001"],['class'=>'form-control','placeholder'=>'ingrese escenario','id'=>'autoescenario'])}}
+                            </div>
 
                         <div class="form-group">
-                            <p>{{Form::submit('agregar', array('class' => 'btn btn-primary'))}}</p>
+                            <p>{{Form::submit('programar partido', array('class' => 'btn btn-primary'))}}</p>
                         </div>
 
                         {{Form::close()}}
@@ -79,6 +85,8 @@
 </div>
 <br>
 <!-- endasistencia-->
+
+@endsection
 @section ('scrips')
 
     <script src="{{asset('/js/jquery-ui/jquery-ui.js')}}"></script>
@@ -95,4 +103,3 @@
         });
     </script>
 @stop
-@endsection

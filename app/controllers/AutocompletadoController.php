@@ -29,6 +29,7 @@ class AutocompletadoController extends \BaseController
         }
         return Response::json($result);
     }
+
     function autocompletedelegado($idcam,$idre)
     {
 
