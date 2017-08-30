@@ -9,7 +9,7 @@ public function partido_all()
 		return View::make('partido.cambios')->with('todoConclusion', $todoConclusion);
 	}
 
-	public function partido_add($codcampeonato,$idtorneo,$idfecha,$idfixture,$codpartido)
+	public function cambio_post($codpartido)
 	{
 
 
@@ -21,7 +21,6 @@ public function partido_all()
 
 			'entra' => 'required',
 			'sale' => 'required',
-			'minuto' => 'required',
 
 			
 		);
@@ -34,16 +33,53 @@ public function partido_all()
 		}
 		else
 		{
-			$category = new Cambio;
+            if(Input::get('entra')==Input::get('sale'))
+            {
+                $error['percy']='son el mismo juagador';
+                return Redirect::back()->withInput()->withErrors($error);
+            }
+            else{
 
-				$category->idjugadorenjuegoentrante = Input::get('entra');
-				$category->idjugadorenjuegosaliente = Input::get('sale');
-				$category->minuto = Input::get('minuto');
-				$category->codpartido = $codpartido;
+                    date_default_timezone_set('America/Lima');
 
-			$category->save();
+                    $partido=Partido::find($codpartido)->horaInicio;
+                    $hoyH = date("H:i:s");
 
-			return Redirect::to('/fechas/'.$codcampeonato.'/'.$idtorneo.'/'.$idfecha.'/'.$idfixture.'/partido.html');
+                    $dteStart = new DateTime($hoyH);
+                    $dteEnd   = new DateTime($partido);
+                    $dteDiff  = $dteEnd->diff($dteStart);
+                    $hora= (int)$dteDiff->format("%H");
+                    $min= (int)$dteDiff->format("%I");
+                    $h=(int)$hora;
+                    $h=$h*60;
+                    $min=$min+$h;
+                    $category = new Cambio;
+
+                    $category->codjugPart1 = Input::get('entra');
+                    $category->codjugPart2= Input::get('sale');
+                    $category->minuto =  $min;
+                    $category->codpartido = $codpartido;
+                    $category->save();
+
+                    $J2=JugadorEnJuego::find(Input::get('sale'));
+
+                    $J1=JugadorEnJuego::find(Input::get('entra'));
+                    $J2->cambio='1';
+                    $aux=$J1->condicionenpartido;
+                    $aux1=$J1->escapitan;
+                    $J1->condicionenpartido=$J2->condicionenpartido;
+                    $J1->escapitan=$J2->escapitan;
+                    $J2->condicionenpartido=$aux;
+                    $J2->escapitan=$aux1;
+                    $J1->save();
+
+
+                    $J2->save();
+
+                $error['percy']='se hizo el cambio normalmente';
+                return Redirect::back()->withInput()->withErrors($error);
+
+            }
 		}
 	}
 
@@ -388,14 +424,219 @@ public function partido_all()
             //->with('todoConclusion', $todoConclusion);
     }
 
+
+    public  function verPartido($codfixture,$codprogramacion)
+    {
+        //$todoConclusion = Cambio::all();
+        //elementos
+        $fixture=Fixture::find($codfixture);
+        //equipo 1
+        $codequipo1=$fixture->codEquipo1;
+        //equipo 2
+        $codequipo2=$fixture->codEquipo2;
+        // partido
+        $codpartido=$fixture->codPartido;
+
+
+        $idfecha=Programacion::find($codprogramacion)->idFecha;
+
+        $codcampeonato=Torneo::find($fixture->codRueda)->codCampeonato;
+
+        $torneo=Torneo::find($fixture->codRueda);
+        $jugador1=Jugador::where('codEquipo','=',$codequipo1)
+            ->where('seleccionado','=','1')->where('estado','=','habilitado')->get();
+        $jugador2=Jugador::where('codEquipo','=',$codequipo2)->where('seleccionado','=','1')
+            ->where('estado','=','habilitado')->get();
+
+        //arbitros
+        $arbitros=Arbitro::where('codCampeonato','=',$codcampeonato)->get();
+
+        $todosArbitros=ArbitroPorPartido::where('codPartido','=',$codpartido)->get();
+
+        //datos que confirman jugadores
+        //mostrar la lista de jugadores
+        $flag=0;
+        $nroPlantilla=Planilla::where('codPartido','=',$codpartido)->count();
+        if($nroPlantilla==2)
+            $flag=1;
+
+
+
+        ///0======= en partido
+        //jugadores de equipo1
+
+
+        $Delanteros1 = DB::table('tpartido')
+            ->join('tplantilla','tpartido.codPartido','=','tplantilla.codPartido')
+            ->join('tjugadorjuego','tplantilla.codPantilla','=','tjugadorjuego.codPantilla')
+            ->join('tjugador','tjugadorjuego.dni','=','tjugador.dni')
+            ->join('tequipo','tjugador.codEquipo','=','tequipo.codEquipo')
+            ->where('tjugadorjuego.condicionenpartido','=','delantero')
+            ->where('tpartido.codPartido','=',$codpartido)
+            ->where('tequipo.codEquipo','=',$codequipo1)
+            ->get();
+
+
+        $Mediocampistas1 = DB::table('tpartido')
+            ->join('tplantilla','tpartido.codPartido','=','tplantilla.codPartido')
+            ->join('tjugadorjuego','tplantilla.codPantilla','=','tjugadorjuego.codPantilla')
+            ->join('tjugador','tjugadorjuego.dni','=','tjugador.dni')
+            ->join('tequipo','tjugador.codEquipo','=','tequipo.codEquipo')
+            ->where('tjugadorjuego.condicionenpartido','=','mediocampista')
+            ->where('tpartido.codPartido','=',$codpartido)
+            ->where('tequipo.codEquipo','=',$codequipo1)
+            ->get();
+
+        $Defensas1  = DB::table('tpartido')
+        ->join('tplantilla','tpartido.codPartido','=','tplantilla.codPartido')
+        ->join('tjugadorjuego','tplantilla.codPantilla','=','tjugadorjuego.codPantilla')
+        ->join('tjugador','tjugadorjuego.dni','=','tjugador.dni')
+        ->join('tequipo','tjugador.codEquipo','=','tequipo.codEquipo')
+        ->where('tjugadorjuego.condicionenpartido','=','defensa')
+        ->where('tpartido.codPartido','=',$codpartido)
+        ->where('tequipo.codEquipo','=',$codequipo1)
+        ->get();
+
+
+
+        $Guardameta1  = DB::table('tpartido')
+            ->join('tplantilla','tpartido.codPartido','=','tplantilla.codPartido')
+            ->join('tjugadorjuego','tplantilla.codPantilla','=','tjugadorjuego.codPantilla')
+            ->join('tjugador','tjugadorjuego.dni','=','tjugador.dni')
+            ->join('tequipo','tjugador.codEquipo','=','tequipo.codEquipo')
+            ->where('tjugadorjuego.condicionenpartido','=','guardameta')
+            ->where('tpartido.codPartido','=',$codpartido)
+            ->where('tequipo.codEquipo','=',$codequipo1)
+            ->get();
+
+        $suplentes1  = DB::table('tpartido')
+            ->join('tplantilla','tpartido.codPartido','=','tplantilla.codPartido')
+            ->join('tjugadorjuego','tplantilla.codPantilla','=','tjugadorjuego.codPantilla')
+            ->join('tjugador','tjugadorjuego.dni','=','tjugador.dni')
+            ->join('tequipo','tjugador.codEquipo','=','tequipo.codEquipo')
+            ->where('tjugadorjuego.condicionenpartido','=','suplente')
+            ->where('tpartido.codPartido','=',$codpartido)
+            ->where('tequipo.codEquipo','=',$codequipo1)
+            ->get();
+
+        //jugador del equipo 2
+        $Delanteros2 = DB::table('tpartido')
+            ->join('tplantilla','tpartido.codPartido','=','tplantilla.codPartido')
+            ->join('tjugadorjuego','tplantilla.codPantilla','=','tjugadorjuego.codPantilla')
+            ->join('tjugador','tjugadorjuego.dni','=','tjugador.dni')
+            ->join('tequipo','tjugador.codEquipo','=','tequipo.codEquipo')
+            ->where('tjugadorjuego.condicionenpartido','=','delantero')
+            ->where('tpartido.codPartido','=',$codpartido)
+            ->where('tequipo.codEquipo','=',$codequipo2)
+            ->get();
+
+
+        $Mediocampistas2 = DB::table('tpartido')
+            ->join('tplantilla','tpartido.codPartido','=','tplantilla.codPartido')
+            ->join('tjugadorjuego','tplantilla.codPantilla','=','tjugadorjuego.codPantilla')
+            ->join('tjugador','tjugadorjuego.dni','=','tjugador.dni')
+            ->join('tequipo','tjugador.codEquipo','=','tequipo.codEquipo')
+            ->where('tjugadorjuego.condicionenpartido','=','mediocampista')
+            ->where('tpartido.codPartido','=',$codpartido)
+            ->where('tequipo.codEquipo','=',$codequipo2)
+            ->get();
+
+        $Defensas2  = DB::table('tpartido')
+            ->join('tplantilla','tpartido.codPartido','=','tplantilla.codPartido')
+            ->join('tjugadorjuego','tplantilla.codPantilla','=','tjugadorjuego.codPantilla')
+            ->join('tjugador','tjugadorjuego.dni','=','tjugador.dni')
+            ->join('tequipo','tjugador.codEquipo','=','tequipo.codEquipo')
+            ->where('tjugadorjuego.condicionenpartido','=','defensa')
+            ->where('tpartido.codPartido','=',$codpartido)
+            ->where('tequipo.codEquipo','=',$codequipo2)
+            ->get();
+
+
+
+        $Guardameta2  = DB::table('tpartido')
+            ->join('tplantilla','tpartido.codPartido','=','tplantilla.codPartido')
+            ->join('tjugadorjuego','tplantilla.codPantilla','=','tjugadorjuego.codPantilla')
+            ->join('tjugador','tjugadorjuego.dni','=','tjugador.dni')
+            ->join('tequipo','tjugador.codEquipo','=','tequipo.codEquipo')
+            ->where('tjugadorjuego.condicionenpartido','=','guardameta')
+            ->where('tpartido.codPartido','=',$codpartido)
+            ->where('tequipo.codEquipo','=',$codequipo2)
+            ->get();
+
+        $suplentes2  = DB::table('tpartido')
+            ->join('tplantilla','tpartido.codPartido','=','tplantilla.codPartido')
+            ->join('tjugadorjuego','tplantilla.codPantilla','=','tjugadorjuego.codPantilla')
+            ->join('tjugador','tjugadorjuego.dni','=','tjugador.dni')
+            ->join('tequipo','tjugador.codEquipo','=','tequipo.codEquipo')
+            ->where('tjugadorjuego.condicionenpartido','=','suplente')
+            ->where('tpartido.codPartido','=',$codpartido)
+            ->where('tequipo.codEquipo','=',$codequipo2)
+            ->get();
+
+        //miembros de mesa
+        $miembrosmesa=Mesa::where('codPartido','=',$codpartido)->get();
+
+        $arbixPart=ArbitroPorPartido::where('codPartido','=',$codpartido)->get();
+
+        // datos para terminar
+        $nroJ1= Jugador::where('codEquipo','=',$codequipo1)->where('seleccionado','=','1')->count();
+        $nroJ2=Jugador::where('codEquipo','=',$codequipo2)->where('seleccionado','=','1')->count();
+        $aux=$nroJ1+$nroJ2;
+        $nroA=$arbixPart=ArbitroPorPartido::where('codPartido','=',$codpartido)->count();
+        $suma=$nroA;
+        return View::make('user_com_organizing.fecha.partido.index',compact('fixture'))
+            ->with('codprogramacion',$codprogramacion)
+            ->with('codpartido',$codpartido)
+            ->with('codequipo1',$codequipo1)
+            ->with('codequipo2',$codequipo2)
+            ->with('jugador1',$jugador1)
+            ->with('jugador2',$jugador2)
+            ->with('arbitros',$arbitros)
+            //en partido
+            ->with('Delanteros1',$Delanteros1)
+            ->with('Mediocampistas1',$Mediocampistas1)
+            ->with('Defensas1',$Defensas1)
+            ->with('Guardameta1',$Guardameta1)
+            ->with('suplentes1',$suplentes1)
+            ->with('Delanteros2',$Delanteros2)
+            ->with('Mediocampistas2',$Mediocampistas2)
+            ->with('Defensas2',$Defensas2)
+            ->with('Guardameta2',$Guardameta2)
+            ->with('suplentes2',$suplentes2)
+
+            ->with('arbixPart',$arbixPart)
+            ->with('todosArbitros',$miembrosmesa)
+            ->with('flag',$flag)
+            ->with('codcampeonato',$codcampeonato)
+            ->with('torneo',$torneo)
+            ->with('idfecha',$idfecha)
+            ->with('todosArbitros',$todosArbitros)
+            ->with('codfixture',$codfixture)
+            ->with('suma',$suma)
+            ->with('aux',$aux);
+
+
+        //->with('todoConclusion', $todoConclusion);
+    }
+
+
+
+
     public  function arbitroadd()
     {
         $idfecha = Input::get('idfecha');
         $codcampeonato = Input::get('codcampeonato');
         $idtorneo = Input::get('idtorneo');
         $codpartido=Input::get('codpartido');
+        $codprogramacion=Input::get('codprogramacion');
+        $fixture=Fixture::where('codPartido','=',$codpartido)->first();
+
+
         $respuesta = ArbitroPorPartido::isertar(Input::all());
-        return Redirect::to('fechas/'.$codcampeonato.'/'.$idtorneo.'/'.$idfecha.'/'.$codpartido.'/partido.html')->withErrors($respuesta['mensaje']);
+
+
+
+        return Redirect::to('verpartido/'.$fixture->codFixture.'/'.$codprogramacion)->withErrors($respuesta['mensaje']);
     }
     public function  crear($id,$nro)
     {
@@ -459,14 +700,18 @@ public function partido_all()
         $idfecha = Input::get('idfecha');
         $codcampeonato = Input::get('codcampeonato');
         $idtorneo = Input::get('idtorneo');
-        $idfixture = Input::get('idfixture');
+        $idfixture = Input::get('codfixture');
+
+        $codequipo1=Input::get('codequipo1');
+        $codprogramacion=Input::get('codprogramacion');
+
 
         $respuesta = JugadorEnJuego::isertar(Input::all());
         if($respuesta['error']==true)
         {
-            return Redirect::to('fechas/'.$idfecha.'/'.$codcampeonato.'/'.$idtorneo.'/'.$idfixture.'/partido.html')->withErrors($respuesta['mensaje']);
+            return Redirect::to('verpartido/'.$idfixture.'/'.$codprogramacion)->withErrors($respuesta['mensaje']);
         }
-         return Redirect::to('fechas/'.$idfecha.'/'.$codcampeonato.'/'.$idtorneo.'/'.$idfixture.'/partido.html')->withErrors($respuesta['mensaje']);
+         return Redirect::to('verpartido/'.$idfixture.'/'.$codprogramacion)->withErrors($respuesta['mensaje']);
     }
 
     public function jugadordelete($idfecha,$codcampeonato,$idtorneo,$idfixture,$idjugadorenjuego)
@@ -578,4 +823,431 @@ public function partido_all()
     {
       echo 'falta';
     }
+
+
+    public function terminar($codpartido, $programacion){
+
+	    $fixture=Fixture::where('codPartido','=',$codpartido)->first();
+	    $par=Partido::find($codpartido);
+	    $par->termino="0";
+	    $par->save();
+
+        return Redirect::to('/partidosprogramados/'.$fixture->codRueda);
+
+    }
+
+
+    public  function empezar($codpartido){
+
+        $fixture=Fixture::where('codPartido','=',$codpartido)->first();
+        $par=Partido::find($codpartido);
+        $par->termino="1";
+        $par->resultado="0";
+        $par->save();
+
+        return Redirect::to('/partidosprogramados/'.$fixture->codRueda);
+    }
+
+
+
+
+    ///  dentro del partido
+    ///
+    ///
+    ///
+
+    public  function incidencias($codfixture,$codprogramacion)
+    {
+        //$todoConclusion = Cambio::all();
+        //elementos
+        $fixture=Fixture::find($codfixture);
+        //equipo 1
+        $codequipo1=$fixture->codEquipo1;
+        //equipo 2
+        $codequipo2=$fixture->codEquipo2;
+        // partido
+        $codpartido=$fixture->codPartido;
+
+
+        $idfecha=Programacion::find($codprogramacion)->idFecha;
+
+        $codcampeonato=Torneo::find($fixture->codRueda)->codCampeonato;
+
+        $torneo=Torneo::find($fixture->codRueda);
+        $jugador1=Jugador::where('codEquipo','=',$codequipo1)
+            ->where('seleccionado','=','1')->where('estado','=','habilitado')->get();
+        $jugador2=Jugador::where('codEquipo','=',$codequipo2)->where('seleccionado','=','1')
+            ->where('estado','=','habilitado')->get();
+
+        //arbitros
+        $arbitros=Arbitro::where('codCampeonato','=',$codcampeonato)->get();
+
+        $todosArbitros=ArbitroPorPartido::where('codPartido','=',$codpartido)->get();
+
+        //datos que confirman jugadores
+        //mostrar la lista de jugadores
+        $flag=0;
+        $nroPlantilla=Planilla::where('codPartido','=',$codpartido)->count();
+        if($nroPlantilla==2)
+            $flag=1;
+
+
+
+        ///0======= en partido
+        //jugadores de equipo1
+
+        $JugadoresP1 = DB::table('tpartido')
+            ->join('tplantilla','tpartido.codPartido','=','tplantilla.codPartido')
+            ->join('tjugadorjuego','tplantilla.codPantilla','=','tjugadorjuego.codPantilla')
+            ->join('tjugador','tjugadorjuego.dni','=','tjugador.dni')
+            ->join('tequipo','tjugador.codEquipo','=','tequipo.codEquipo')
+            ->where('tpartido.codPartido','=',$codpartido)
+            ->where('tequipo.codEquipo','=',$codequipo1)
+            ->get();
+        $JugadoresP2 = DB::table('tpartido')
+            ->join('tplantilla','tpartido.codPartido','=','tplantilla.codPartido')
+            ->join('tjugadorjuego','tplantilla.codPantilla','=','tjugadorjuego.codPantilla')
+            ->join('tjugador','tjugadorjuego.dni','=','tjugador.dni')
+            ->join('tequipo','tjugador.codEquipo','=','tequipo.codEquipo')
+            ->where('tpartido.codPartido','=',$codpartido)
+            ->where('tequipo.codEquipo','=',$codequipo2)
+            ->get();
+
+
+
+        $Jugadores1 = DB::table('tpartido')
+            ->join('tplantilla','tpartido.codPartido','=','tplantilla.codPartido')
+            ->join('tjugadorjuego','tplantilla.codPantilla','=','tjugadorjuego.codPantilla')
+            ->join('tjugador','tjugadorjuego.dni','=','tjugador.dni')
+            ->join('tequipo','tjugador.codEquipo','=','tequipo.codEquipo')
+            ->where('tjugadorjuego.condicionenpartido','<>','suplente')
+            ->where('tpartido.codPartido','=',$codpartido)
+            ->where('tequipo.codEquipo','=',$codequipo1)
+            ->get();
+
+        $suplentes1 = DB::table('tpartido')
+            ->join('tplantilla','tpartido.codPartido','=','tplantilla.codPartido')
+            ->join('tjugadorjuego','tplantilla.codPantilla','=','tjugadorjuego.codPantilla')
+            ->join('tjugador','tjugadorjuego.dni','=','tjugador.dni')
+            ->join('tequipo','tjugador.codEquipo','=','tequipo.codEquipo')
+            ->where('tjugadorjuego.condicionenpartido','=','suplente')
+            ->where('tpartido.codPartido','=',$codpartido)
+            ->where('tequipo.codEquipo','=',$codequipo1)
+            ->get();
+
+
+        $Jugadores2 = DB::table('tpartido')
+            ->join('tplantilla','tpartido.codPartido','=','tplantilla.codPartido')
+            ->join('tjugadorjuego','tplantilla.codPantilla','=','tjugadorjuego.codPantilla')
+            ->join('tjugador','tjugadorjuego.dni','=','tjugador.dni')
+            ->join('tequipo','tjugador.codEquipo','=','tequipo.codEquipo')
+            ->where('tjugadorjuego.condicionenpartido','<>','suplente')
+            ->where('tpartido.codPartido','=',$codpartido)
+            ->where('tequipo.codEquipo','=',$codequipo2)
+            ->get();
+
+        $suplentes2 = DB::table('tpartido')
+            ->join('tplantilla','tpartido.codPartido','=','tplantilla.codPartido')
+            ->join('tjugadorjuego','tplantilla.codPantilla','=','tjugadorjuego.codPantilla')
+            ->join('tjugador','tjugadorjuego.dni','=','tjugador.dni')
+            ->join('tequipo','tjugador.codEquipo','=','tequipo.codEquipo')
+            ->where('tjugadorjuego.condicionenpartido','=','suplente')
+            ->where('tpartido.codPartido','=',$codpartido)
+            ->where('tequipo.codEquipo','=',$codequipo2)
+            ->get();
+
+        /// tarjetas
+        $tarjetasJT1= DB::table('tpartido')
+            ->join('ttarjeta','tpartido.codPartido','=','ttarjeta.codPartido')
+            ->join('tjugadorjuego','ttarjeta.codjugPart','=','tjugadorjuego.codjugPart')
+            ->join('tjugador','tjugadorjuego.dni','=','tjugador.dni')
+            ->join('tequipo','tjugador.codEquipo','=','tequipo.codEquipo')
+            ->where('tpartido.codPartido','=',$codpartido)
+            ->where('tequipo.codEquipo','=',$codequipo1)
+            ->get();
+
+
+        $tarjetasJ1= DB::table('tpartido')
+            ->join('ttarjeta','tpartido.codPartido','=','ttarjeta.codPartido')
+            ->join('tjugadorjuego','ttarjeta.codjugPart','=','tjugadorjuego.codjugPart')
+            ->join('tjugador','tjugadorjuego.dni','=','tjugador.dni')
+            ->join('tequipo','tjugador.codEquipo','=','tequipo.codEquipo')
+            ->where('tjugadorjuego.condicionenpartido','<>','suplente')
+            ->where('tpartido.codPartido','=',$codpartido)
+            ->where('tequipo.codEquipo','=',$codequipo1)
+            ->get();
+
+        $tarjetasJT2= DB::table('tpartido')
+            ->join('ttarjeta','tpartido.codPartido','=','ttarjeta.codPartido')
+            ->join('tjugadorjuego','ttarjeta.codjugPart','=','tjugadorjuego.codjugPart')
+            ->join('tjugador','tjugadorjuego.dni','=','tjugador.dni')
+            ->join('tequipo','tjugador.codEquipo','=','tequipo.codEquipo')
+            ->where('tpartido.codPartido','=',$codpartido)
+            ->where('tequipo.codEquipo','=',$codequipo2)
+            ->get();
+
+        $tarjetasJ2= DB::table('tpartido')
+            ->join('ttarjeta','tpartido.codPartido','=','ttarjeta.codPartido')
+            ->join('tjugadorjuego','ttarjeta.codjugPart','=','tjugadorjuego.codjugPart')
+            ->join('tjugador','tjugadorjuego.dni','=','tjugador.dni')
+            ->join('tequipo','tjugador.codEquipo','=','tequipo.codEquipo')
+            ->where('tjugadorjuego.condicionenpartido','<>','suplente')
+            ->where('tpartido.codPartido','=',$codpartido)
+            ->where('tequipo.codEquipo','=',$codequipo2)
+            ->get();
+
+        ///goles
+
+        $golesJT1= DB::table('tpartido')
+            ->join('tgol','tpartido.codPartido','=','tgol.codPartido')
+            ->join('tjugadorjuego','tgol.codjugPart','=','tjugadorjuego.codjugPart')
+            ->join('tjugador','tjugadorjuego.dni','=','tjugador.dni')
+            ->join('tequipo','tjugador.codEquipo','=','tequipo.codEquipo')
+            ->where('tpartido.codPartido','=',$codpartido)
+            ->where('tequipo.codEquipo','=',$codequipo1)
+            ->get();
+
+
+        $golesJ1= DB::table('tpartido')
+            ->join('tgol','tpartido.codPartido','=','tgol.codPartido')
+            ->join('tjugadorjuego','tgol.codjugPart','=','tjugadorjuego.codjugPart')
+            ->join('tjugador','tjugadorjuego.dni','=','tjugador.dni')
+            ->join('tequipo','tjugador.codEquipo','=','tequipo.codEquipo')
+            ->where('tjugadorjuego.condicionenpartido','<>','suplente')
+            ->where('tpartido.codPartido','=',$codpartido)
+            ->where('tequipo.codEquipo','=',$codequipo1)
+            ->get();
+
+        $golesJT2= DB::table('tpartido')
+            ->join('tgol','tpartido.codPartido','=','tgol.codPartido')
+            ->join('tjugadorjuego','tgol.codjugPart','=','tjugadorjuego.codjugPart')
+            ->join('tjugador','tjugadorjuego.dni','=','tjugador.dni')
+            ->join('tequipo','tjugador.codEquipo','=','tequipo.codEquipo')
+            ->where('tpartido.codPartido','=',$codpartido)
+            ->where('tequipo.codEquipo','=',$codequipo2)
+            ->get();
+
+        $golesJ2= DB::table('tpartido')
+            ->join('tgol','tpartido.codPartido','=','tgol.codPartido')
+            ->join('tjugadorjuego','tgol.codjugPart','=','tjugadorjuego.codjugPart')
+            ->join('tjugador','tjugadorjuego.dni','=','tjugador.dni')
+            ->join('tequipo','tjugador.codEquipo','=','tequipo.codEquipo')
+            ->where('tjugadorjuego.condicionenpartido','<>','suplente')
+            ->where('tpartido.codPartido','=',$codpartido)
+            ->where('tequipo.codEquipo','=',$codequipo2)
+            ->get();
+
+
+        $incidencias=Incidencia::where('codPartido','=',$codpartido)->get();
+
+        $goles=Gol::where('codPartido','=',$codpartido)->get();
+        $tajetas=Tarjeta::where('codPartido','=',$codpartido)->get();
+        $cambios=Cambio::where('codPartido','=',$codpartido)->get();
+
+
+        //miembros de mesa
+        $miembrosmesa=Mesa::where('codPartido','=',$codpartido)->get();
+
+        $arbixPart=ArbitroPorPartido::where('codPartido','=',$codpartido)->get();
+
+        // datos para terminar
+        $nroJ1= Jugador::where('codEquipo','=',$codequipo1)->where('seleccionado','=','1')->count();
+        $nroJ2=Jugador::where('codEquipo','=',$codequipo2)->where('seleccionado','=','1')->count();
+        $aux=$nroJ1+$nroJ2;
+        $nroA=ArbitroPorPartido::where('codPartido','=',$codpartido)->count();
+        $suma=$nroA;
+        return View::make('user_com_organizing.fecha.partido.insidencia.index',compact('fixture'))
+            ->with('codprogramacion',$codprogramacion)
+            ->with('codpartido',$codpartido)
+            ->with('codequipo1',$codequipo1)
+            ->with('codequipo2',$codequipo2)
+            ->with('jugador1',$jugador1)
+            ->with('jugador2',$jugador2)
+            ->with('arbitros',$arbitros)
+            //en partido
+            ->with('Jugadores1',$Jugadores1)
+            ->with('Jugadores2',$Jugadores2)
+            ->with('suplentes1',$suplentes1)
+            ->with('suplentes2',$suplentes2)
+            ->with('JugadoresP1',$JugadoresP1)
+            ->with('JugadoresP2',$JugadoresP2)
+            ->with('arbixPart',$arbixPart)
+            ->with('todosArbitros',$miembrosmesa)
+            ->with('flag',$flag)
+            ->with('codcampeonato',$codcampeonato)
+            ->with('torneo',$torneo)
+            ->with('idfecha',$idfecha)
+            ->with('todosArbitros',$todosArbitros)
+            ->with('codfixture',$codfixture)
+            ->with('suma',$suma)
+            ->with('aux',$aux)
+            ->with('incidencias',$incidencias)
+            ->with('goles',$goles)
+            ->with('tajetas',$tajetas)
+            ->with('cambios',$cambios)
+            ->with('tarjetasJT1',$tarjetasJT1)
+            ->with('tarjetasJ1',$tarjetasJT1)
+            ->with('tarjetasJT2',$tarjetasJT2)
+            ->with('tarjetasJ2',$tarjetasJT2)
+            ->with('golesJT1',$golesJT1)
+            ->with('golesJ1',$golesJ1)
+            ->with('golesJT2',$golesJT2)
+            ->with('golesJ2',$golesJ2);
+        //->with('todoConclusion', $todoConclusion);
+    }
+    public  function tarjeta_post($codpartido)
+    {
+        $idfecha = Input::get('idfecha');
+        $codcampeonato = Input::get('codcampeonato');
+        $idtorneo = Input::get('idtorneo');
+        $idfixture = Input::get('idfixture');
+        $jugadorjuego=Input::get('jugador');
+
+        date_default_timezone_set('America/Lima');
+
+        $partido=Partido::find($codpartido)->horaInicio;
+        $hoyH = date("H:i:s");
+
+        $dteStart = new DateTime($hoyH);
+        $dteEnd   = new DateTime($partido);
+        $dteDiff  = $dteEnd->diff($dteStart);
+        $hora= (int)$dteDiff->format("%H");
+        $min= (int)$dteDiff->format("%I");
+        $h=(int)$hora;
+        $h=$h*60;
+        $min=$min+$h;
+
+
+
+        $tar=Tarjeta::where('codPartido','=',$codpartido)
+            ->where('tipo','=','amarilla')
+            ->where('codjugPart','=',$jugadorjuego)->count();
+        $tarjeta='';
+        if($tar==1)
+        {
+
+
+            $tarjeta='roja';
+            $tar1=Tarjeta::where('codPartido','=',$codpartido)
+                ->where('tipo','=','amarilla')
+                ->where('codjugPart','=',$jugadorjuego)->first();
+             $tar1->tipo=$tarjeta;
+            $tar1->minuto=$min;
+             $tar1->save();
+            $respuesta['mensaje'] = 'Tarjeta roja por acumulacion ';
+
+
+
+            $j7=JugadorEnJuego::find($jugadorjuego);
+            $j7->condicionenpartido="suplente";
+            $j7->save();
+            return Redirect::back()->withInput()->withErrors($respuesta);
+
+
+        }
+        $tarjeta=Input::get('tipo');
+        if($tarjeta=='roja')
+        {
+
+
+            $newtarjeta=new Tarjeta();
+            $newtarjeta->codPartido=$codpartido;
+            $newtarjeta->codjugPart=$jugadorjuego;
+            $newtarjeta->tipo=$tarjeta;
+            $newtarjeta->minuto=$min;
+            $newtarjeta->save();
+
+            $respuesta['mensaje'] = 'Tarjeta roja  ';
+
+
+            $j7=JugadorEnJuego::find($jugadorjuego);
+            $j7->condicionenpartido="suplente";
+            $j7->save();
+            return Redirect::back()->withInput()->withErrors($respuesta);
+
+        }
+
+        $newtarjeta = new Tarjeta();
+        $newtarjeta->tipo = Input::get('tipo');
+
+        $newtarjeta->codjugPart = Input::get('jugador');
+        $newtarjeta->minuto=$min;
+        $newtarjeta->codPartido=$codpartido;
+        $newtarjeta->save();
+
+
+
+        $respuesta['mensaje'] = 'Tarjeta amarilla';
+        return Redirect::back()->withInput()->withErrors($respuesta);
+    }
+    public  function gol_post($codpartido)
+    {
+        $idfecha = Input::get('idfecha');
+        $codcampeonato = Input::get('codcampeonato');
+        $idtorneo = Input::get('idtorneo');
+        $idfixture = Input::get('idfixture');
+        $jugadorjuego=Input::get('jugador');
+        $codequipo1=Input::get('codequipo1');
+        $codequipo2=Input::get('codequipo2');
+
+        $codequipo=$codequipo1;
+        if($codequipo=='')
+        {
+            $codequipo=$codequipo2;
+        }
+
+
+        date_default_timezone_set('America/Lima');
+
+        $partido=Partido::find($codpartido)->horaInicio;
+        $hoyH = date("H:i:s");
+
+        $dteStart = new DateTime($hoyH);
+        $dteEnd   = new DateTime($partido);
+        $dteDiff  = $dteEnd->diff($dteStart);
+        $hora= (int)$dteDiff->format("%H");
+        $min= (int)$dteDiff->format("%I");
+        $h=(int)$hora;
+        $h=$h*60;
+        $min=$min+$h;
+
+
+
+        $newtarjeta = new Gol;
+
+        $newtarjeta->codjugPart = Input::get('jugador');
+        $newtarjeta->minuto=$min;
+        $newtarjeta->codPartido=$codpartido;
+        $newtarjeta->save();
+
+
+
+        $respuesta['mensaje'] = 'gol anotado por '.Equipo::find($codequipo)->nombre;
+        return Redirect::back()->withInput()->withErrors($respuesta);
+    }
+
+    public function terminarJuego($codpartido, $Goles1,$Goles2){
+
+        $fixture=Fixture::where('codPartido','=',$codpartido)->first();
+        date_default_timezone_set('America/Lima');
+
+        $hoyH = date("H:i:s");
+        $par=Partido::find($codpartido);
+        $par->termino="2";
+        $resultado='-3';
+        if($Goles1<$Goles2)
+            $resultado='3';
+        else
+            if($Goles1==$Goles2)
+                $resultado='0';
+        $par->resultado=$resultado;
+        $par->horaFin=$hoyH;
+        $par->save();
+
+
+        $respuesta['wilson']='se termino el encuetro entre '. Equipo::find($fixture->codEquipo1)->nombre." - ".Equipo::find($fixture->codEquipo2)->nombre;
+        return Redirect::to('/partidosprogramados/'.$fixture->codRueda)->withInput()->withErrors($respuesta);
+    }
+
+
 }

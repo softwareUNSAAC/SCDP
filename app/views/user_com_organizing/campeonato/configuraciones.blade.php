@@ -24,10 +24,11 @@ $flag=0;
 if($torneos!=0){
     $torneosAll=torneo::where('codCampeonato','=',$campeonato->codCampeonato)->get();
     $T=torneo::where('codCampeonato','=',$campeonato->codCampeonato)->first();
+    if($T->nombre!="falta"){
+        $flag=-1;
+    }
 }
-if($T->nombre!="falta"){
-    $flag=-1;
-}
+
 $i=0;
 $j=0;
 

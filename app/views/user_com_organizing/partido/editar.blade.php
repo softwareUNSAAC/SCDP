@@ -27,6 +27,7 @@
                                     <input id="Cod_partido" type="text" placeholder="Código del Partido"  value="{{$part->codpartido}}" class="form-control" name="Cod_partido" onKeyPress="return validar(event)" maxlength="7" required>
                                 </div>
                             </div>
+
                             <div class="form-group">
                                 {{ Form::label('nombres', Lang::get('DNI'),array('class'=>'col-sm-2 control-label')) }}
                                 <div class="col-sm-10">

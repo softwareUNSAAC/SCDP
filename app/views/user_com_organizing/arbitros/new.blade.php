@@ -42,11 +42,14 @@
                             <label>Apellidos</label>
                             <input class="form-control" placeholder="ingrese los apellidos del arbitro" name="apellidos" required>
                         </div>
-                            <!-- completar cuando ingresemos equipo -->
+                            <!-- falta en base de datos y controlador-->
                         <div class="form-group">
-                            <label>foto</label>
-                            <input class="form-control" placeholder="24" name="edad" required>
-                        </div>
+                                <label>logo:</label><br>
+                                <div class="col-sm-10">
+                                    <input name="logo" type="file" id="imgInp" class="btn btn-default">
+                                </div>
+                            </div>
+                            <img id="blah" style="width: 200px" class="img-responsive img-thumbnail"/><br><br>
                         <button type="submit" class="btn btn-primary">Guardar</button>
                         <button type="reset" class="btn btn-default">Limpiar</button>
                         <button type="submit" class="btn btn-danger" onclick="history.back()">Cancelar</button>
@@ -62,5 +65,21 @@ p
 
 @endsection
 @section ('scrips')
+    <script src="{{asset('/js/bootstrap-table.js')}}"></script>
+    <script src="{{asset('/js/jquery-ui/jquery-ui.js')}}"></script>
+    <script type="text/javascript">
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $('#blah').attr('src', e.target.result);
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+        $("#imgInp").change(function(){
+            readURL(this);
+        });
+    </script>
 @stop
 

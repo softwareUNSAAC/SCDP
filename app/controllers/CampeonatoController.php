@@ -89,7 +89,7 @@ class CampeonatoController extends \BaseController {
         $numero = $this->comis();
         $users = DB::table('tactividad')->count();
         $users++;
-        return  "ACT".$numero."0".$users;
+        return  "AC".$numero.$users;
     }
     public function addacti($id)
     {
@@ -235,9 +235,11 @@ class CampeonatoController extends \BaseController {
         foreach ( $campeonatoA as $ca )
             $campeonato=$ca;
         $flag=1;
-        if(!$campeonatoA)
+        if(!$campeonato)
             $flag=-1;
-        $flag=strcmp(Input::get('Codigo'),$campeonato->codCampeonato);
+        else {
+            $flag = strcmp(Input::get('Codigo'), $campeonato->codCampeonato);
+        }
         if($flag!=0) {
             $campeonato = new Campeonato;
             $hoy = getdate();
@@ -513,19 +515,19 @@ class CampeonatoController extends \BaseController {
 
         if($data=Equipo::find($codigoE)){
             //codelegados
-            $error = ['wilson' => '1'];
+            $error = ['wilson' => 'mismo codigo equipo'];
             return Redirect::back()->withInput()->withErrors($error);
         }
 
         else {
             if ($data1 = User::where('username', '=', $coddocente)->first()) {
-                $error = ['wilson' => '2'];
+                $error = ['wilson' => 'mismo usuario '.$coddocente];
                 return Redirect::back()->withInput()->withErrors($error);
             } else {
                 if ($data2 = Equipo::where('nombre', '=', $nombreE)->first())
 
                 {
-                    $error = ['wilson' => '3'];
+                    $error = ['wilson' => 'mismo nombre de equipo'];
                     return Redirect::back()->withInput()->withErrors($error);
                 }
                 else {

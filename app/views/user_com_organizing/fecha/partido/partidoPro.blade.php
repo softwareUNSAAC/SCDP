@@ -78,7 +78,7 @@
                                                 <div class="form-inline">
                                                     <div class="form-group">
                                                         @if($fec1->termino==-1)
-                                                            <a class="btn btn-success margin text-lowercase" type="button" href=""><span class="glyphicon glyphicon-plus"></span>VER PARTIDO</a>
+                                                            <a class="btn btn-success margin text-lowercase" type="button" href="{{URL::to('/verpartido/'.$val->fixture.'/'.$val->programacion)}}"><span class="glyphicon glyphicon-plus"></span>VER PARTIDO</a>
                                                         @endif
                                                         @if($fec1->termino==0)
                                                             @if($flag>0)
@@ -97,18 +97,23 @@
                                                                         $aux=1;
                                                                     else
                                                                         if($flag1==-1)
-                                                                            if($hora&&$min<20)
+                                                                            if($hora==0&&$min<40)
                                                                                 $aux=1;
                                                                     ?>
                                                                 @if($aux==1)
-                                                                    <a class="btn btn-danger margin text-lowercase" type="button" href=""><span class="glyphicon glyphicon-plus"></span>empezar</a>
+                                                                    <a class="btn btn-danger margin text-lowercase" type="button" href="{{URL::to('/partido/empezar/'.$fec1->codPartido)}}"><span class="glyphicon glyphicon-plus"></span>empezar</a>
                                                                 @else
-                                                                    <a class="btn btn-danger margin text-lowercase" type="button" href=""><span class="glyphicon glyphicon-plus"></span>supender</a>
+                                                                    @if($hora>2)
+
+                                                                        <a class="btn btn-danger margin text-lowercase" type="button" href=""><span class="glyphicon glyphicon-plus"></span>supender</a>
+                                                                    @endif
                                                                 @endif
                                                             @endif
                                                         @endif
                                                         @if($fec1->termino==1)
-                                                                <a class="btn btn-danger margin text-lowercase" type="button" href=""><span class="glyphicon glyphicon-plus"></span>incidencias</a>
+                                                                <a class="btn btn-danger margin text-lowercase" type="button" href="{{URL::to('/incidencias/'.$val->fixture.'/'.$val->programacion)}}"><span class="glyphicon glyphicon-plus"></span>incidencias</a>
+                                                                <a class="btn btn-success margin text-lowercase" type="button" href=""><span class="glyphicon glyphicon-check"></span>listo</a>
+
                                                             @endif
                                                             @if($fec1->termino==2)
                                                                 <a class="btn btn-danger margin text-lowercase" type="button" href=""><span class="glyphicon glyphicon-plus"></span>termino</a>

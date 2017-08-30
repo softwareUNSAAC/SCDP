@@ -9,11 +9,11 @@ class Fixture extends Eloquent
 /*
 
     public function dataEquipo1() {
-        return $this->hasMany("Equipo", 'codequipo', 'equipo1');
+        return $this->hasMany("Equipo", 'codEquipo', 'equipo1');
     }
 
     public function dataEquipo2() {
-        return $this->hasMany("Equipo", 'codequipo', 'equipo2');
+        return $this->hasMany("Equipo", 'codEquipo', 'equipo2');
     }
 */
 }

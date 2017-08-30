@@ -1,8 +1,8 @@
 @extends('_templates.apptemp')
 
 @section('titulo')
-    @lang('Varapp.nombre_sistema_mediano')
 @stop
+    @lang('Varapp.nombre_sistema_mediano')
 
 @section('estilos')
     <link href="{{asset('/js/jquery-ui/jquery-ui.css')}}" rel="stylesheet">
@@ -15,14 +15,14 @@
 @stop
 
 @section('nombrevista')
-    @lang('NUEVA CUENTA DE ADMINISTRADOR')
+    @lang('comison de justicia')
 @stop
 
 @section('contenido')
     <div class="row">
         <div class="col-lg-12">
             <div class="panel panel-default">
-                <div class="panel-heading">Ingrese los datos del nuevo administrador</div>
+                <div class="panel-heading">Ingrese los datos del nuevo integrate</div>
                 <div class="panel-body">
 
                     <div class="col-xs-7 col-md-7 col-sm-8">

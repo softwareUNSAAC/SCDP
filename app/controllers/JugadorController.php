@@ -2,6 +2,35 @@
 
 class JugadorController extends \BaseController
 {
+
+
+    function autocompletedocenteuno()
+    {
+        $term = Str::lower(Input::get('term'));
+        //convertimos los datos a un arreglo puro
+        $data = DB::table('tdocente')->select('codDocente', 'nombre', 'apellidoP', 'apellidoM')->where('seleccionado','<>','1')->get();
+        $arregloDocente = [];
+        foreach ($data as $docente) {
+            $codigo = $docente->codDocente;
+            $nombre = $docente->nombre;
+            $ap = $docente->apellidoP;
+            $am = $docente->apellidoM;
+            $aux = [$codigo => $codigo . ' ' . $nombre . ' ' . $ap . ' ' . $am];
+            $arregloDocente = array_merge($aux, $arregloDocente);
+        }
+        //filtramos
+        $result = [];
+        foreach ($arregloDocente as $valor) {
+            if (strpos(Str::lower($valor), $term) !== false) {
+                $result[] = ['value' => $valor];
+            }
+        }
+        return Response::json($result);
+    }
+
+
+
+
     public function listar()
     {
         $codequipo = Session::get('user_codequipo');
@@ -34,22 +63,26 @@ class JugadorController extends \BaseController
                         ->First();
                     if($jugadorenequipo == '')
                     {
-                        $fullnamedocente = $docente->apellidopaterno.' '.$docente->apellidomaterno.' '.$docente->nombre;
+                        $fullnamedocente = $docente->codDocente;
                         $file = Input::file('foto');
                         $extension = $file->getClientOriginalExtension();
                         $namefotocomplete = $fullnamedocente.'.'.$extension;
                         $file->move('storage/jugador', $namefotocomplete);
-
+                        $nro1 = DB::table('tjugador')
+                            ->join('tequipo','tequipo.codEquipo','=','tjugador.codEquipo')
+                            ->count();
                         $newjugador = new Jugador();
-                        $newjugador->dni=Input::get('DNI');
-                        $newjugador->direccion=Input::get('direccion');
-                        $newjugador->telefono=Input::get('telefono');
-                        $newjugador->edad=Input::get('edad');
+                        $newjugador->dni=$docente->codDocente.$nro1;
                         $newjugador->foto = $namefotocomplete;
                         $newjugador->estado = 'habilitado';//el jugador se crea por defecto en habilitado
                         $newjugador->codEquipo = Session::get('user_codequipo');
                         $newjugador->codDocente = $coddocente;
+                        $newjugador->seleccionado='0';
                         $newjugador->save();
+
+                        $docenteaux=Docente::find($docente->codDocente);
+                        $docenteaux->seleccionado='1';
+                        $docenteaux->save();
 
                         Session::flash('message','Jugador agregado correctamente');
                         return Redirect::to('jugador/listar.html');
@@ -117,12 +150,8 @@ class JugadorController extends \BaseController
                     if($haydocenteenequipo->codDocente == $coddocente)//no se ha cambiado el nombre del jugador
                     {
                         $file->move('storage/jugador', $namefotocomplete);
-                        $direccion=Input::get('direccion');
-                        $telefono=Input::get('telefono');
-                        $edad=Input::get('edad');
-                        Jugador::where('dni','=',$idjugador)->update(['foto'=>$namefotocomplete,
-                            'direccion'=>$direccion,'telefono'=>$telefono,'edad'=>$edad
 
+                        Jugador::where('dni','=',$idjugador)->update(['foto'=>$namefotocomplete
                         ]);
 
                         Session::flash('message','Jugador actualizo correctamente');

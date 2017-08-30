@@ -225,7 +225,7 @@ class ProgramacionController extends \BaseController
             ->join('tprogramacion','tpartido.codPartido','=', 'tprogramacion.codPartido')
             ->select('tfixture.codFixture as fixture', 'tpartido.codPartido as codpartido','tprogramacion.codProgramacion as programacion')
             ->where('tfixture.codRueda','=',$idtorneo)
-            ->where('tpartido.termino','<>','0')
+            ->where('tpartido.termino','<>','2')
             ->where('tprogramacion.actual','=','1')
             ->whereNotNull('tfixture.codPartido')->orderBY('tprogramacion.diaPartido', 'ASC')->get();
 

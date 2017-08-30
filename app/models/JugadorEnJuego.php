@@ -2,21 +2,17 @@
 
 class JugadorEnJuego extends Eloquent
 {
-    protected $table = 'tjugadorenjuego';
-    protected $primaryKey = 'idjugadorenjuego';
+    protected $table = 'tjugadorjuego';
+    protected $primaryKey = 'codjugPart';
 	public $timestamps = false;
-	protected $fillable = ['nrocamiseta','condicionenpartido','escapitan','idjugador','codpartido'];
+	protected $fillable = ['nrocamiseta','condicionenpartido','escapitan','dni','codPantilla'];
 	
-    public function dataEquipo()
-    {
-        return $this->hasMany("Equipo", 'codequipo', 'codequipo');
-    }
+
 
     public static function isertar($input)
     {
         $respuesta = [];
         $reglas = [
-            'codpartido'=>array('required'),
             'jugador'=>array('required'),
             'camiseta'=>array('required'),
             'escapitan'=>array('required'),
@@ -29,14 +25,21 @@ class JugadorEnJuego extends Eloquent
         }
         else
         {
+            $nro=JugadorEnJuego::count();
+            $nro++;
             $newjugadorenjuego = new JugadorEnJuego();
             $newjugadorenjuego ->nrocamiseta = Input::get('camiseta');
             $newjugadorenjuego ->condicionenpartido = Input::get('condicion');
             $newjugadorenjuego ->escapitan = Input::get('escapitan');
-            $newjugadorenjuego ->idjugador = Input::get('jugador');
-            $newjugadorenjuego ->codpartido = Input::get('codpartido');
+            $newjugadorenjuego ->dni = Input::get('jugador');
+            $newjugadorenjuego ->codPantilla  = Input::get('codplantilla');
+            $newjugadorenjuego->codjugPart='JP'.substr(Input::get('jugador'),0,2).$nro;
             $newjugadorenjuego ->save();
 
+
+            $jugador=Jugador::find(Input::get('jugador'));
+            $jugador->seleccionado='2';
+            $jugador->save();
             $respuesta['mensaje'] = 'Jugador agregado correctamente para este partido';
             $respuesta['error'] = false;
         }

@@ -40,6 +40,7 @@ class ArbitroPorPartido extends Eloquent
             $AxP->rol = $rol;
             $AxP->dni = $arbitro;
             $AxP->codPartido = $codpartido;
+
             $AxP->save();
                 $respuesta['mensaje'] = 'agregado correctamente ';
                 $respuesta['error'] = false;

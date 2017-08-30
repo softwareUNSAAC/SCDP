@@ -102,6 +102,9 @@ Route::group(array('before'=>'organ'), function()
             Route::post('ingreso/formulario2/{id}', 'MovimientoController@update');
             Route::get('NuevoMov/addEgreso','MovimientoController@createE');
             Route::post('NuevoMov/addEgreso','MovimientoController@storeE');
+
+
+
             //gol
             Route::get('gol/', array('uses' => 'GolController@mostrar'));
             Route::get('gol/listar', array('uses' => 'GolController@mostrar'));
@@ -229,6 +232,15 @@ Route::group(array('before'=>'organ'), function()
             Route::get('partido/cambios/edit/{id}', 'PartidoController@partido_get_edit');
             Route::post('partido/cambios/edit/{id}', 'PartidoController@partido_post_edit');
             Route::get('partido/cambios/delete/{id}', 'PartidoController@partido_delete');
+
+
+
+            Route::post('partido/cambios/add/{id}', 'PartidoController@cambio_post');
+
+            Route::post('partido/tarjeta/add/{id}', 'PartidoController@tarjeta_post');
+            Route::post('partido/gol/add/{id}', 'PartidoController@gol_post');
+
+
             //torneos
             Route::get('torneo/create/{id}','TorneoController@create');
             Route::get('torneo/{id}/{id2}/detail.html','TorneoController@detail');
@@ -265,7 +277,13 @@ Route::group(array('before'=>'organ'), function()
             //partidosprogramados
 
              Route::get('/partidosprogramados/{id}', 'ProgramacionController@partidosProgramados');
+            Route::get('/partido/empezar/{id}', 'PartidoController@empezar');
+             Route::get('/verpartido/{id}/{id2}', 'PartidoController@verPartido');
+            Route::get('/terminar/{id}/{id2}', 'PartidoController@terminar');
+            Route::get('/incidencias/{id}/{id2}', 'PartidoController@incidencias');
 
+
+            Route::get('/terminarJuego/{id}/{id2}/{id3}', 'PartidoController@terminarJuego');
             Route::post('fecha/edit/{id}/{id2}/programacioPartido/{id3}', 'ProgramacionController@editpartido_post');
 
            // 'fecha/edit/'.$codcampeonato.'/'.$codtorneo.'/programacioPartido/'.$codfixture
@@ -278,8 +296,8 @@ Route::group(array('before'=>'organ'), function()
 
 
             //======= END creacion de fechas la programacion ===============
-            Route::post('fechas/detail/partido/arbitros/add.html', 'PartidoController@arbitroadd');
-            Route::post('fechas/detail/partido/plantillas/add.html', 'PartidoController@enviarP');
+             Route::post('fechas/detail/partido/arbitros/add.html', 'PartidoController@arbitroadd');
+             Route::post('fechas/detail/partido/plantillas/add.html', 'PartidoController@enviarP');
 
             Route::post('fechas/detail/partido/jugador/add.html', 'PartidoController@jugadoradd');
             Route::get('fechas/{id1}/{id2}/{id3}/{id4}/{id5}/eliminar.html', 'PartidoController@jugadordelete');//borra a un jugador del partido
@@ -341,6 +359,13 @@ Route::group(array('before'=>'equip'), function()
             Route::post('jugador/logo.html','EquipoController@logoadd_post');
             Route::get('jugador/logo/delete.html','EquipoController@logodelete');
 
+            Route::get('partido/list.html','EquipoController@listPartido');
+
+            Route::get('partido/confirmar.html/{id}','EquipoController@confirmar');
+            Route::post('partido/confirma.html/{id}','EquipoController@post_confirmar');
+            Route::post('partido/confirmatodo.html/','EquipoController@todo');
+            Route::post('partido/terminar.html/{id}','EquipoController@terminar');
+
             //plantilla
             //Route::get('plantilla/{id}','EquipoController@indexPlantilla');
 
@@ -348,6 +373,7 @@ Route::group(array('before'=>'equip'), function()
            
 //===================Funciones del User Normal====================
 Route::get('autodocente','AutocompletadoController@autocompletedocente');
+Route::get('autodocenteuno','JugadorController@autocompletedocenteuno');
 Route::get('campeonato/autodocente','AutocompletadoController@autocompletedocente');//autocompletardo
 //Route::get('escenarioauto', 'AutocompletadoController@autocompleteescenario');
 

@@ -12,6 +12,8 @@ class UsernormalController extends \BaseController {
             //AQUI VA TODOS LOS ELEMENTOS QUE APARECERAN EN LA PANTALLA 
             //DE INICIO SIN INICIAR SESION DE NINGUN TIPO :)
 
+
+
             $idcomision= Session::get('user_idcom_orgdor');
             $campeonato=null;
             if($idcomision){
@@ -96,7 +98,13 @@ class UsernormalController extends \BaseController {
     public function tablaposiciones()
     {
 
-        $tabla= DB::select('call TABLAPOSICIONES');
+
+
+
+        $tabla= DB::select('call TABLA');
+        $goles= DB::select('call GOLES');
+        $goleadores= DB::select('call GOLEADORES');
+
         $ultimafecha = Campeonato::max('fechacreacion');
         $campeonatoactual = Campeonato::where('fechacreacion','=',$ultimafecha)->first();
         $idcomision = $campeonatoactual->idcom_orgdor;
@@ -105,7 +113,9 @@ class UsernormalController extends \BaseController {
         //echo $campeonatoactual->idcom_orgdor;
         //print_r($campeonatoactual->nombre);
         return View::make('user_normal.tablaposicion')->with('campeonatoactual',$campeonatoactual)
-            ->with('tabla',$tabla);
+            ->with('tabla',$tabla)
+            ->with('goles',$goles)
+            ->with('goleadores',$goleadores);
     }
 
 }

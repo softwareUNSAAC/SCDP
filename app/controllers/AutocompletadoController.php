@@ -85,4 +85,36 @@ class AutocompletadoController extends \BaseController
         return Response::json($result);
     }
 
+    function autocompletedocente1()
+    {
+        $term = Str::lower(Input::get('term'));
+        //convertimos los datos a un arreglo puro
+
+        $codequipo = Session::get('user_codequipo');
+
+        $delega=Delegado::where('codEquipo','=',$codequipo);
+        $coddocente=$delega->codDocente;
+        $departamento=Docente::find($coddocente)->codDptoAcademico;
+
+        $data = DB::table('tdocente')->select('codDocente', 'nombre', 'apellidoP', 'apellidoM')->where('codDptoAcademico','=',$departamento)->get();
+        $arregloDocente = [];
+        foreach ($data as $docente) {
+            $codigo = $docente->codDocente;
+            $nombre = $docente->nombre;
+            $ap = $docente->apellidoP;
+            $am = $docente->apellidoM;
+            $aux = [$codigo => $codigo . ' ' . $nombre . ' ' . $ap . ' ' . $am];
+            $arregloDocente = array_merge($aux, $arregloDocente);
+        }
+        //filtramos
+        $result = [];
+        foreach ($arregloDocente as $valor) {
+            if (strpos(Str::lower($valor), $term) !== false) {
+                $result[] = ['value' => $valor];
+            }
+        }
+        return Response::json($result);
+    }
+
+
 }

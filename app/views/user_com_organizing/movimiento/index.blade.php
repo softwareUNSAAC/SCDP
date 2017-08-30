@@ -44,12 +44,12 @@
                     @foreach($movimientos as $mov)
                         <tr>
                             <td>{{$mov->tipo}}</td>
-                            <td>{{$mov->montototal}}</td>
+                            <td>{{$mov->montoTotal}}</td>
                             <td>{{$mov->fecha}}</td>
                             <td>{{$mov->descripcion}}</td>
                             <td>
 
-                                <a class="label label-danger" href="{{URL::to('movimientos/'.$mov->nromovimiento.'/delete.html')}}">
+                                <a class="label label-danger" href="{{URL::to('movimientos/'.$mov->codMovimiento.'/delete.html')}}">
                                     <span class="glyphicon glyphicon-trash">&nbsp;Delete</span>
                                 </a>
                             </td>

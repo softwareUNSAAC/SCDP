@@ -24,7 +24,7 @@
 			<div class="panel panel-default">
 				<div class="panel-heading">Agregar Docente</div>
 					<div class="panel-body">
-						<div class="col-md-6">
+						<div class="col-md-12">
 							{{ Form::open(array('url' => 'docente/formulario1','method' => 'post', 'files' => true, 'class' => 'form-horizontal')) }}
 								
 								<!-- BEGIN PARA MANEJO DE ERRORES -->
@@ -44,48 +44,51 @@
 		                        <!-- END PARA MANEJO DE ERRORES -->
 
 		                        <!-- BEGIN CONTENIDO DEL FORMULARIO -->
-								<div class="form-group">
-									<label>Codigo de docente</label>
-									<input class="form-control" placeholder="11223" name="codigo"  maxlength="6" required>
+								<div class="col-md-6 form-horizontal">
+									<div class="form-group">
+										<label>Codigo de docente</label>
+										<input class="form-control" placeholder="11223" name="codigo"  maxlength="6" required>
+									</div>
+									<div class="form-group">
+										<label>Nombre</label>
+										<input class="form-control" placeholder="Juan" name="nombre" required>
+									</div>
+									<div class="form-group">
+										<label>Apellido Paterno</label>
+										<input class="form-control" placeholder="Perez" name="apellidopaterno" required>
+									</div>
+									<div class="form-group">
+										<label>Apellido Materno</label>
+										<input class="form-control" placeholder="Perez" name="apellidomaterno" required>
+									</div>
 								</div>
-								<div class="form-group">
-									<label>Nombre</label>
-									<input class="form-control" placeholder="Juan" name="nombre" required>
-								</div>
-								<div class="form-group">
-									<label>Apellido Paterno</label>
-									<input class="form-control" placeholder="Perez" name="apellidopaterno" required>
-								</div>
-								<div class="form-group">
-									<label>Apellido Materno</label>
-									<input class="form-control" placeholder="Perez" name="apellidomaterno" required>
-								</div>
-								<div class="form-group">
-									<label>Categoria</label>
-									<select  class="form-control" name="categoria">
-										<option class="form-control" value="nombrado">nombrado</option>
-										<option class="form-control" value="contratado">contratado</option>
-									</select>
-								</div>
+								<div class="col-md-6 form-horizontal">
+									<div class="form-group">
+										<label>Categoria</label>
+										<select  class="form-control" name="categoria">
+											<option class="form-control" value="nombrado">nombrado</option>
+											<option class="form-control" value="contratado">contratado</option>
+										</select>
+									</div>
 
-                                <div class="form-group">
-                                    <label>Email</label>
-                                    <input class="form-control" placeholder="wil@gmail.com" name="email" required>
-                                </div>
+									<div class="form-group">
+										<label>Email</label>
+										<input class="form-control" placeholder="wil@gmail.com" name="email" required>
+									</div>
 
-								<div class="form-group">
-									<label>Departamento Academico</label>
-									<select  class="form-control" name="iddepartamento">
-									@foreach( $dptotodo as $dpto)
-										<option class="form-control" value="{{$dpto->codDptoAcademico}}"> {{$dpto->nombre}} </option>
-									@endforeach
-									</select>
+									<div class="form-group">
+										<label>Departamento Academico</label>
+										<select  class="form-control" name="iddepartamento">
+										@foreach( $dptotodo as $dpto)
+											<option class="form-control" value="{{$dpto->codDptoAcademico}}"> {{$dpto->nombre}} </option>
+										@endforeach
+										</select>
+									</div>
+									<!-- END CONTENIDO DEL FORMULARIO -->
+
+									<button type="submit" class="btn btn-primary">Guardar</button>
+									<button type="reset" class="btn btn-default">Limpiar</button>
 								</div>
-                                <!-- END CONTENIDO DEL FORMULARIO -->
-
-								<button type="submit" class="btn btn-primary">Guardar</button>
-								<button type="reset" class="btn btn-default">Limpiar</button>
-							
 							{{ Form::close() }}
 							</div>
 						</div>

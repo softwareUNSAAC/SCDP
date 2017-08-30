@@ -1,86 +1,233 @@
+
 <?php
 
-    $arr=array();
-    foreach($arbitros as $value)
-    {
-        if(!ArbitroPorPartido::where('codPartido','=',$partido->codPartido)->where('dni','=',$value->dni)->first())
-        $arr[$value->dni]=$value->dni." ".$value->nombre." ".$value->ApellidoP." ".$value->ApellidoM;
-    }
-    $arr1=array();
-    if(!ArbitroPorPartido::where('codPartido','=',$partido->codPartido)->where('rol','=','principal')->first())
-        $arr1['principal']='principal';
-    if(!ArbitroPorPartido::where('codPartido','=',$partido->codPartido)->where('rol','=','asistente1')->first())
-        $arr1['asistente1']='asistente1';
-    if(!ArbitroPorPartido::where('codPartido','=',$partido->codPartido)->where('rol','=','asistente2')->first())
-        $arr1['asistente2']='asistente2';
+$equipo=Equipo::find($codequipo1);
+$codplantilla=Planilla::where('codPartido','=',$codpartido)->where('nroPlantilla','=','1')->first()->codPantilla;
 
 ?>
 
-@if($arbixPart<3)
-    <div class="col-md-12 col-no-gutter">
-        <div class="panel panel-default">
-            <div class="panel-heading">Ingrese los Arbitros del partido</div>
-            <div class="panel-body">
-                <div class="canvas-wrapper">
-                    <div class="col-md-12">
-                        {{ Form::open(array('url'=>'fechas/detail/partido/arbitros/add.html','autocomplete'=>'off','class'=>'form_horizontal','role'=>'form'))}}
-                        <!-- BEGIN CONTENIDO DEL FORMULARIO -->
-                        {{ Form::hidden('idtorneo',$torneo->codRueda) }}
-                        {{ Form::hidden('codcampeonato',$codcampeonato) }}
-                        {{ Form::hidden('idfecha',$idfecha )}}
-                        {{ Form::hidden('codpartido',$partido->codPartido) }}
 
-                        <label>Agregar arbitro:</label>
-                        <div class="form-group">
-                            {{Form::select('arbitro', $arr,'',array('class' => 'form-control'))}}
-                            <span class="help-block">{{ $errors->first('agenda') }}</span>
+        <div class="row">
+            <div class="row col-no-gutter-container">
+                <div class="col-xs-6 col-md-2 col-no-gutter">
+                    <div class="panel panel-default">
+                        <div class="panel-body easypiechart-panel">
+                            <div>
+                                {{ HTML::image('storage/equipo/camiseta/'.$equipo->logo,'Image Empty',['class'=>'img-responsive','title'=>'logo del equipo '.$equipo->nombre,'style'=>'width:155px']) }}
+                            </div>
                         </div>
-                        <label>Rol:</label>
+                    </div>
+                </div>
+            </div>
+        </div><br>
+        <div class="panel-heading">Planilla de jugadores
+            <div class="panel-tools pull-right">
+                <div class="form-inline">
+                    <div class="form-group">
+                        {{Form::open(array('method' => 'POST', 'url' => '/fechas/'.$codcampeonato.'/'.$torneo->idtorneo.'/'.$idfecha.'/'.$partido->codPartido.'/partido.html/planilla/'.$equipo->codequipo, 'role' => 'form'))}}
+
                         <div class="form-group">
-                            {{Form::select('rol', $arr1,'',array('class' => 'form-control'))}}
-                            <span class="help-block">{{ $errors->first('agenda') }}</span>
+                            <p>{{Form::submit('PDF', array('class' => 'btn btn-primary'))}}</p>
                         </div>
-                        <br>
-                        <button type="submit" class="btn btn-primary">Guardar</button>
-                        <button type="reset" class="btn btn-default">Reset</button>
-                        {{ Form::close()}}
-                        <!-- END CONTENIDO DEL FORMULARIO -->
+
+                        {{Form::close()}}
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+        <div class="panel-body panel-footer">
+            <div class="row">
+                <div class="row col-no-gutter-container">
+                    @foreach($Delanteros1 as $jugadorenjuego)
+                        <div class="col-xs-6 col-md-2 col-no-gutter">
+                            <div class="panel panel-danger">
+                                <div class="panel-heading">
+                                    @if($jugadorenjuego->escapitan == 'si')
+                                        <span class="glyphicon glyphicon-bookmark" title="Capitan"><span class="text-lowercase"> capitán</span> Delantero</span>
+                                    @else
+                                        Delantero
+                                    @endif
+                                </div>
+                                <div class="panel-body easypiechart-panel">
+                                    <div >
+                                        {{ HTML::image('storage/jugador/'.$jugadorenjuego->foto,'Image Empty',['class'=>'img-responsive','title'=>'Foto del jugador','style'=>'width:150px']) }}
+                                        <h5>{{Docente::find(Jugador::find($jugadorenjuego->dni)->codDocente)->apellidoP}}({{$jugadorenjuego->nrocamiseta}})</h5>
+                                    </div>
 
-
-
-@endif
-<div class="col-md-12 col-no-gutter">
-    <div class="panel panel-default">
-        <div class="panel-heading">Arbitros del partido</div>
-        <div class="panel-body">
-            <div class="canvas-wrapper">
-                <div class="col-md-12">
-                    @foreach($todosArbitros as $value)
-                    <strong class="primary-font">Arbitro {{$value->rol}}:<br> </strong>
-                    <strong class="primary-font">Nombre y Apellidos:</strong>
-                    <span class="text-primary">
-                               {{Arbitro::find($value->dni)->nombre}} {{Arbitro::find($value->dni)->ApellidoP}} {{Arbitro::find($value->dni)->ApellidoM}}
-                            </span><br>
-                    <strong class="primary-font">DNI:  </strong>
-                    <span class="text-primary">
-                                {{$value->dni}}
-                            </span><br>
-                    <strong class="primary-font">Observaciones: </strong>
-                    <span class="text-primary">
-                            {{$value->observaciones}}
-                        </span><br><br><br>
+                                </div>
+                            </div>
+                        </div>
                     @endforeach
-                    <br>
                 </div>
+            </div><br>
+
+            <div class="row">
+                <div class="row col-no-gutter-container">
+                    @foreach($Mediocampistas1 as $jugadorenjuego)
+                        <div class="col-xs-6 col-md-2 col-no-gutter">
+                            <div class="panel panel-primary">
+                                <div class="panel-heading">
+                                    @if($jugadorenjuego->escapitan == 'si')
+                                        <span class="glyphicon glyphicon-bookmark" title="Capitan"><span class="text-lowercase"> capitán</span> Mediocpta</span>
+                                    @else
+                                        Mediocpta
+                                    @endif
+                                </div>
+                                <div class="panel-body easypiechart-panel">
+                                    <div >
+                                        {{ HTML::image('storage/jugador/'.$jugadorenjuego->foto,'Image Empty',['class'=>'img-responsive','title'=>'Foto del jugador','style'=>'width:150px']) }}
+                                        <h5>{{Docente::find(Jugador::find($jugadorenjuego->dni)->codDocente)->apellidoP}}({{$jugadorenjuego->nrocamiseta}})</h5>
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div><br>
+
+            <div class="row">
+                <div class="row col-no-gutter-container">
+                    @foreach($Defensas1 as $jugadorenjuego)
+                        <div class="col-xs-6 col-md-2 col-no-gutter">
+                            <div class="panel panel-warning">
+                                <div class="panel-heading">
+                                    @if($jugadorenjuego->escapitan == 'si')
+                                        <span class="glyphicon glyphicon-bookmark" title="Capitan"><span class="text-lowercase"> capitán</span> Defensa</span>
+                                    @else
+                                        Defensa
+                                    @endif
+                                </div>
+                                <div class="panel-body easypiechart-panel">
+                                    <div >
+                                        {{ HTML::image('storage/jugador/'.$jugadorenjuego->foto,'Image Empty',['class'=>'img-responsive','title'=>'Foto del jugador','style'=>'width:150px']) }}
+                                        <h5>{{Docente::find(Jugador::find($jugadorenjuego->dni)->codDocente)->apellidoP}}({{$jugadorenjuego->nrocamiseta}})</h5>
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div><br>
+
+            <div class="row">
+                <div class="row col-no-gutter-container">
+                    @foreach($Guardameta1 as $jugadorenjuego)
+                        <div class="col-xs-6 col-md-2 col-no-gutter">
+                            <div class="panel panel-success">
+                                <div class="panel-heading">
+                                    @if($jugadorenjuego->escapitan == 'si')
+                                        <span class="glyphicon glyphicon-bookmark" title="Capitan"><span class="text-lowercase"> capitán</span> Arquero</span>
+                                    @else
+                                        Arquero
+                                    @endif
+                                </div>
+                                <div class="panel-body easypiechart-panel">
+                                    <div >
+                                        {{ HTML::image('storage/jugador/'.$jugadorenjuego->foto,'Image Empty',['class'=>'img-responsive','title'=>'Foto del jugador','style'=>'width:150px']) }}
+                                        <h5>{{Docente::find(Jugador::find($jugadorenjuego->dni)->codDocente)->apellidoP}}({{$jugadorenjuego->nrocamiseta}})</h5>
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div><br>
+        </div>
+
+
+
+<div class="panel-body panel-footer">
+    <div id="step-1 ">
+        <div class="row">
+            <div class="row col-no-gutter-container">
+                @foreach($suplentes1 as $jugadorenjuego)
+                    <div class="col-xs-6 col-md-2 col-no-gutter">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                @if($jugadorenjuego->escapitan == 'si')
+                                    <span class="glyphicon glyphicon-bookmark" title="Capitan"><span class="text-lowercase"> capitán</span> Suplente</span>
+                                @else
+                                    Suplente
+                                @endif
+                            </div>
+                            <div class="panel-body easypiechart-panel">
+                                {{ HTML::image('storage/jugador/'.$jugadorenjuego->foto,'Image Empty',['class'=>'img-responsive','title'=>'Foto del jugador','style'=>'width:150px']) }}
+                                <h5>{{Docente::find(Jugador::find($jugadorenjuego->dni)->codDocente)->apellidoP}}({{$jugadorenjuego->nrocamiseta}})</h5>
+
+
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div><br>
+    </div>
+</div>
+<div class="panel-footer">
+
+        {{ Form::open(array('url'=>'fechas/detail/partido/jugador/add.html','autocomplete'=>'off','class'=>'form_horizontal','role'=>'form'))}}
+        <div class="col-md-3">
+            {{ Form::hidden('codpartido',$partido->codpartido) }}
+            {{ Form::hidden('idtorneo',$torneo->idtorneo) }}
+            {{ Form::hidden('codcampeonato',$codcampeonato) }}
+            {{ Form::hidden('idfecha',$idfecha )}}
+            {{ Form::hidden('codfixture',$codfixture) }}
+            {{ Form::hidden('codequipo1',$codequipo1) }}
+            {{ Form::hidden('codprogramacion',$codprogramacion) }}
+            {{ Form::hidden('codplantilla',$codplantilla) }}
+            <div class="form-group">
+                {{ Form::label('dni', 'Jugador',array("class"=>"control-label")) }}
+                <select  class="form-control" name="jugador">
+                    @foreach( $jugador1 as $val)
+                        @if($val->seleccionado=='1')
+
+                        <option class="form-control" value="{{$val->dni}}">{{$val->dataDocente[0]->apellidoP}} {{$val->dataDocente[0]->apellidoM}} {{$val->dataDocente[0]->nombre}}</option>
+                        @endif
+                    @endforeach
+                </select>
             </div>
         </div>
-        <div class="panel-footer">
-
+        <div class="col-md-3">
+            <div class="form-group">
+                {{ Form::label('dni', 'Condicion',array("class"=>"control-label")) }}
+                <select  class="form-control" name="condicion">
+                    <option class="form-control" value="delantero">Delantero</option>
+                    <option class="form-control" value="mediocampista">Mediocampista</option>
+                    <option class="form-control" value="guardameta">Guardameta</option>
+                    <option class="form-control" value="defensa">Defensa</option>
+                    <option class="form-control" value="suplente">Suplente</option>
+                </select>
+            </div>
         </div>
-    </div>
+        <div class="col-md-2">
+            <div class="form-group">
+                {{ Form::label('dni', 'Camiseta',array("class"=>"control-label")) }}
+                {{ Form::text('camiseta',null,["class"=>"required form-control","maxlength"=>"2"]) }}
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="form-group">
+                {{ Form::label('dni', 'Es campitan?',array("class"=>"control-label")) }}
+                <select  class="form-control" name="escapitan">
+                    <option class="form-control" value="no">No</option>
+
+                        <option class="form-control" value="si">Si</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="form-group"><br>
+                {{ Form::submit('Agregar',['class' => 'btn btn-primary'])}}
+            </div>
+        </div>
+        {{ Form::close()}}
+
+
+
 </div>

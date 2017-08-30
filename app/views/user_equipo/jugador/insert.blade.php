@@ -29,23 +29,7 @@
                     <div class="col-md-12">
                         {{ Form::open(['url'=>'jugador/insertar.html','files' => true,'autocomplete'=>'off','class'=>'form_horizontal','role'=>'form'])}}
                         <!-- BEGIN CONTENIDO DEL FORMULARIO -->
-                        <div class="form-group">
-                            {{Form::label('lbldni','DNI:')}}
-                            {{Form::text('DNI','',['class'=>'form-control','placeholder'=>'ingrese el dni','maxlength'=>'8'])}}
-                        </div>
-                        <div class="form-group">
-                            {{Form::label('lbldireccion','direccion:')}}
-                            {{Form::text('direccion','',['class'=>'form-control','placeholder'=>'ingrese el direccion'])}}
-                        </div>
-                        <div class="form-group">
-                            {{Form::label('lbltelefono','telefono:')}}
-                            {{Form::tel('telefono','',['class'=>'form-control','placeholder'=>'ingrese el telefono'])}}
-                        </div>
 
-                        <div class="form-group">
-                            {{Form::label('lbledad','edad:')}}
-                            {{Form::number('edad','',['class'=>'form-control','placeholder'=>'ingrese el edad'])}}
-                        </div>
                         <div class="form-group">
                             {{Form::label('lbldocente','Nombre:')}}
                             {{Form::text('Nombre',Input::old('docenteauto'),['class'=>'form-control','placeholder'=>'ingrese el nombre del integrante','id'=>'docenteauto'])}}
@@ -60,9 +44,10 @@
                         <img id="blah" style="width: 200px" class="img-responsive"/><br><br>
                         <button type="submit" class="btn btn-primary">Guardar</button>
                         <button type="reset" class="btn btn-default">Limpiar</button>
+                        <button type="submit" class="btn btn-danger" onclick="history.back()">Cancelar</button>
                         {{ Form::close()}}
                         <br>
-                        <button type="submit" class="btn btn-danger" onclick="history.back()">Cancelar</button>
+
                         <!-- END CONTENIDO DEL FORMULARIO -->
                     </div>
                 </div>
@@ -70,12 +55,15 @@
         </div>
     </div>
 
+
+
+@endsection
 @section ('scrips')
     <script src="{{asset('/js/jquery-ui/jquery-ui.js')}}"></script>
     <script>
         $(function() {
             $("#docenteauto").autocomplete({
-                source: "autodocente",
+                source: "autodocenteuno",
                 minLength: 1,
                 select: function( event, ui ) {
                     $('#response').val(ui.item.id);
@@ -101,5 +89,3 @@
         });
     </script>
 @stop
-
-@endsection

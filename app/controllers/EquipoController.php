@@ -50,6 +50,20 @@ class EquipoController extends \BaseController {
         $nrojugadores = Jugador::where('codEquipo','=',$codequipo)->count();
         $nrodelegados=Delegado::where('codEquipo','=',$codequipo)->count();
         $equipo = Equipo::where('codEquipo','=',$codequipo)->first();
+
+        $codcampenato=$equipo->codCampeonato;
+
+        $torneos=Torneo::where('codCampeonato','=',$codcampenato)->get();
+        $codtorneo="";
+
+
+
+        $fixture=Fixture::where('codEquipo1','=',$codequipo)->where('codEquipo1','=',$codequipo)->get();
+
+
+
+
+
         return View::make('user_equipo.index')
             ->with('equipo',$equipo)
             ->with('nrojugadores',$nrojugadores)
@@ -203,25 +217,133 @@ class EquipoController extends \BaseController {
             ->with('codplantilla',$codplantilla);
 
     }
-    public function agregarplantilla_post()
-    {
-        $codequipo=Input::get('codequipo');
-        $codplantilla=Input::get('codplantilla');
 
-        $dni=Input::get('dni');
-        $camiseta=Input::get('camiseta');
-
-        $condicion=Input::get('condicion');
-        $escapitan=Input::get('escapitan');
-
-        $todoasistente=DB::table('tplantilla')
-            ->join('tasistente', 'treunion.codReunion', '=', 'tasistente.codReunion')
-            ->join('tdelegando', 'tasistente.dni', '=', 'tdelegando.dni')
-            ->join('tdocente', 'tdelegando.codDocente', '=', 'tdocente.codDocente')
-            ->select('tdocente.codDocente', 'tdocente.nombre','tdocente.apellidoP','tdocente.apellidoM','tdelegando.rol')
-            ->where( 'treunion.codreunion', '=', $id)
-            ->get();
+        public function listPartido(){
 
 
-    }
-}
+            $codequipo = Session::get('user_codequipo');
+            date_default_timezone_set('America/Lima');
+            $hoy = date("Y-m-d");
+            $nro=DB::table('tpartido')
+                ->join('tfixture', 'tfixture.codPartido', '=', 'tpartido.codPartido')
+                ->select('tpartido.codPartido as p','tpartido.termino as t','tfixture.codEquipo1 as e1','tfixture.codEquipo2 as e2')
+                ->where( 'tpartido.termino', '=', '2')
+                ->get();
+
+            $i=0;
+            foreach ($nro as $f)    {
+                if($f->e1==$codequipo || $f->e2==$codequipo)
+                    $i++;
+            }
+
+            $nroPartidos=$i;
+            $partidoProgramado=DB::table('tpartido')
+                ->join('tprogramacion', 'tpartido.codPartido', '=', 'tprogramacion.codPartido')
+                ->join('tfixture', 'tfixture.codPartido', '=', 'tpartido.codPartido')
+                ->select('tprogramacion.codProgramacion as codProgramacion', 'tpartido.codPartido as codpartido','tfixture.codFixture as codfixture','tpartido.termino')
+                ->where( 'tprogramacion.diaPartido', '>', $hoy)
+                ->where( 'tprogramacion.actual', '=', '1')
+                ->where( 'tfixture.codEquipo1', '=', $codequipo)
+                ->orwhere( 'tfixture.codEquipo2', '=',$codequipo)
+                ->where( 'tpartido.termino', '<>', '2')
+                ->orderBy('tprogramacion.diaPartido','asc')->first();
+
+            return View::make('user_equipo.partido.list')
+                ->with('partidoProgramado', $partidoProgramado)
+                ->with('nroPartidos', $nroPartidos)
+                ->with('codequipo', $codequipo);
+
+        }
+
+        public  function  confirmar($codpartido){
+
+            $codequipo = Session::get('user_codequipo');
+            $fixture=Fixture::where('codPartido','=',$codpartido)->first();
+            $jugadores =DB::table('tjugador')
+                ->join('tdocente', 'tjugador.codDocente', '=', 'tdocente.codDocente')
+                ->select('tdocente.codDocente as codDocente','tdocente.nombre as nombre', 'tdocente.apellidoP as apellidoP ','tdocente.apellidoM as apellidoM','tjugador.dni as dni')
+                ->where( 'tjugador.codEquipo', '=', $codequipo)->get();
+            $codcampeonato=Torneo::find($fixture->codRueda)->codCampeonato;
+            return View::make('user_equipo.partido.confirmar')
+                ->with('codpartido',$codpartido)
+                ->with('jugadores',$jugadores)
+                ->with('codequipo',$codequipo)
+                ->with('fixture',$fixture)
+                ->with('codcampeonato',$codcampeonato);
+        }
+        public function post_confirmar($dni){
+            $codequipo = Session::get('user_codequipo');
+                    $ediJ=Jugador::find($dni);
+                    $seleccionado="";
+                    if('habilitado'==Input::get('habilitado'))
+                    {
+                        $seleccionado="1";
+
+                    }
+                    else
+                    {
+                        $seleccionado="0";
+                    }
+                    if('desabilitado'==Input::get('desabilitado'))
+                    {
+                        $seleccionado="0";
+                    }
+
+                    $ediJ->seleccionado=$seleccionado;
+                    $ediJ->save();
+
+
+                    return Redirect::back();
+                }
+
+         public function todo(){
+
+             $codequipo = Session::get('user_codequipo');
+
+             $todo=Jugador::where('codEquipo','=',$codequipo)->get();
+
+             foreach ($todo as $value){
+                 $value->seleccionado='1';
+                 $value->save();
+
+             }
+             return Redirect::back();
+
+         }
+        public function terminar($codpartido){
+
+            $codequipo = Session::get('user_codequipo');
+
+
+            $nro1=Planilla::where('codPartido','=',$codpartido)->count();
+            $nro2=Planilla::count();
+
+            $equipo=Fixture::where('codPartido','=',$codpartido)->first();
+            $nroplantilla=2;
+            if($equipo->codEquipo1==$codequipo)
+                $nroplantilla=1;
+
+            $newplantilla= new Planilla;
+
+
+            $newplantilla->codPantilla="Pl".$nro1.$nro2;
+
+            $newplantilla->nroPlantilla=$nroplantilla;
+            $newplantilla->codPartido=$codpartido;
+            $newplantilla->save();
+
+
+            return Redirect::to('partido/list.html');
+
+        }
+
+
+
+
+        }
+
+
+
+
+
+

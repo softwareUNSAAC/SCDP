@@ -14,14 +14,30 @@ class MovimientoController extends BaseController
 
 	public function createI()
 	{
-		$todoEquipos=Equipo::all();
+        $cod=Session::get('user_idcom_orgdor');
+        $campeonato=Campeonato::where('codCom_Org','=',$cod)->get();
+        $cam=null;
+        foreach ($campeonato as $value)
+        {
+            $cam=$value;
+        }
+
+        $todoEquipos=Equipo::where('codCampeonato','=',$cam->codCampeonato)->get();
 		return View::make('user_com_organizing.movimiento.ingresos.agregar')->with('todoEquipos',$todoEquipos);
 		
 	}
 	public function createE()
 	{
-		$todoEquipos=Equipo::all();
-		$movimientos = Movimiento::all();
+        $cod=Session::get('user_idcom_orgdor');
+        $campeonato=Campeonato::where('codCom_Org','=',$cod)->get();
+        $cam=null;
+        foreach ($campeonato as $value)
+        {
+            $cam=$value;
+        }
+
+		$todoEquipos=Equipo::where('codCampeonato','=',$cam->codCampeonato)->get();
+		$movimientos = Movimiento::where('codCom_Org','=',$cod)->get();
 		return View::make('user_com_organizing.movimiento.egresos.agregar')->with('todoEquipos',$todoEquipos);
 	}
 	public function storeI()
@@ -29,21 +45,26 @@ class MovimientoController extends BaseController
         date_default_timezone_set("America/Lima");
         $tiempo = getdate();
         $timefull = date('Y-m-d').' '.$tiempo['hours'].':'.$tiempo['minutes'].':'.$tiempo['seconds'];
-
+        $nro=Movimiento::where('codCom_Org','=',Session::get('user_idcom_orgdor'))->count();
         $idmovimiento = DB::table('tmovimiento')->insertGetId([
-							'tipo'=>"ingreso",
-							'montototal' => Input::get('montototal'),
+
+                            'codMovimiento'=>'MOV'.($nro+1),
+							'montoTotal' => Input::get('montototal'),
                             'descripcion' => Input::get('descripcion'),
 							'fecha' => $timefull,
-                            'idcom_orgdor'=>Session::get('user_idcom_orgdor')
+                            'codCom_Org'=>Session::get('user_idcom_orgdor')
 							]);
 		$newingreso = new Ingreso;
-		$newingreso -> codequipo = Input::get('codequipo');
-		$newingreso -> nromovimiento =$idmovimiento;
+		$nro1=Ingreso::count();
+		$newingreso -> codEquipo = Input::get('codequipo');
+        $newingreso -> codIngreso = 'IN'.($nro1+1);
+
+		$newingreso -> codMovimiento ='MOV'.($nro+1);
 		$newingreso -> save();
-        $equipo = Equipo::where('codequipo','=',Input::get('codequipo'))->first();
-        $idusuario = $equipo->idusuario;
-        User::where('idusuario','=',$idusuario)
+
+        $equipo = Equipo::where('codEquipo','=',Input::get('codequipo'))->first();
+        $idusuario = $equipo->idUsuario;
+        User::where('idUsuario','=',$idusuario)
             ->update(['estado'=>'activo']);
 		return Redirect::to('movimientos');
 	}
@@ -52,16 +73,19 @@ class MovimientoController extends BaseController
         date_default_timezone_set("America/Lima");
         $tiempo = getdate();
         $timefull = date('Y-m-d').' '.$tiempo['hours'].':'.$tiempo['minutes'].':'.$tiempo['seconds'];
-
+        $nro=Movimiento::where('codCom_Org','=',Session::get('user_idcom_orgdor'))->count();
 		$idmovimiento = DB::table('tmovimiento')->insertGetId([
-							'tipo'=>"Egreso",
-							'montototal' => Input::get('montototal'),
+                            'codMovimiento'=>'MOV'.($nro+1),
+		                    'tipo'=>"Egreso",
+							'montoTotal' => Input::get('montototal'),
 							'descripcion' => Input::get('descripcion'),
                             'fecha' => $timefull,
-                            'idcom_orgdor'=>Session::get('user_idcom_orgdor')
+                            'codCom_Org'=>Session::get('user_idcom_orgdor')
 							]);
+        $nro1=Ingreso::count();
 		$newingreso = new Egreso;
-		$newingreso -> nromovimiento =$idmovimiento;
+        $newingreso -> codEgreso = 'EG'.($nro1+1);
+        $newingreso -> codMovimiento ='MOV'.($nro+1);
 		$newingreso -> save();
 		return Redirect::to('movimientos');
 	}
@@ -96,16 +120,16 @@ class MovimientoController extends BaseController
 
 	public function destroy($nromovimiento)
 	{
-        $movimiento = Movimiento::where('nromovimiento','=',$nromovimiento)->first();
+        $movimiento = Movimiento::where('codMovimiento','=',$nromovimiento)->first();
         if($movimiento->tipo = 'ingreso')
         {
-            Ingreso::where('nromovimiento','=',$nromovimiento)->delete();
+            Ingreso::where('codMovimiento','=',$nromovimiento)->delete();
         }
         if($movimiento->tipo = 'egreso')
         {
-            Egreso::where('nromovimiento','=',$nromovimiento)->delete();
+            Egreso::where('codMovimiento','=',$nromovimiento)->delete();
         }
-        Movimiento::where('nromovimiento','=',$nromovimiento)->delete();
+        Movimiento::where('codMovimiento','=',$nromovimiento)->delete();
         return Redirect::to('movimientos');
         //Egreso::where('nromovimiento','=',$nromovimiento)->delete();
         //echo Egreso::where('nromovimiento','=',$nromovimiento)->first();

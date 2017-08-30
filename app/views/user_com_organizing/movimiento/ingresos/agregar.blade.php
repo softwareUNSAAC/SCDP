@@ -32,7 +32,7 @@
                             <label>Pago del equipo</label>
                             <select  class="form-control" name="codequipo">
                                 @foreach( $todoEquipos as $equi)
-                                    <option class="form-control" value="{{$equi->codequipo}}">{{$equi->nombre}} </option>
+                                    <option class="form-control" value="{{$equi->codEquipo}}">{{$equi->nombre}} </option>
                                 @endforeach
                             </select>
                         </div>

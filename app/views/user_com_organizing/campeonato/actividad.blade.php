@@ -81,7 +81,7 @@
                                     <th>Fecha Inicio</th>
                                     <th>Fecha Fin</th>
                                     <th>Observaciones</th>
-                                    <th>acciones</th>
+
                                 </tr>
                                 </thead>
                                 <tbody>

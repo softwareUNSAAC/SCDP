@@ -32,19 +32,19 @@
 							
 								<div class="form-group">
 									<label>Id Ingreso</label>
-									<input class="form-control" placeholder="idingreso" name="idingreso" value="{{$camp->idingreso}}" readonly="readonly">
+									<input class="form-control" placeholder="idingreso" name="idingreso" value="{{$camp->codIngreso}}" readonly="readonly">
 								</div>
 								<div class="form-group">
 									<label>Equipo</label>
 									<select  class="form-control" name="codequipo">
 									@foreach( $todoEquipos as $equi)
-										<option class="form-control" value="{{$equi->codequipo}}">{{$equi->codequipo}} {{$equi->nombre}} </option>
+										<option class="form-control" value="{{$equi->codEquipo}}">{{$equi->codEquipo}} {{$equi->nombre}} </option>
 									@endforeach
 									</select>
 								</div>
 								<div class="form-group">
 									<label>Nro Movimiento</label>
-									<input class="form-control" placeholder="nromovimiento" name="nromovimiento" value="{{$camp->nromovimiento}}" readonly="readonly">
+									<input class="form-control" placeholder="nromovimiento" name="nromovimiento" value="{{$camp->codMovimiento}}" readonly="readonly">
 								</div>
 
 

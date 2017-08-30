@@ -19,6 +19,7 @@
 <?php
 
 $equipo=Equipo::find($cadena);
+$nroEquipos=Equipo::where('codCampeonato','=',$campeonato)->count();
 $flag=-1;
 if($equipo)
     $flag=1;
@@ -30,7 +31,7 @@ if($equipo)
     <div class="row">
         <div class="col-lg-12">
             <div class="panel panel-default">
-                <div class="panel-heading">EQUIPO</div>
+                <div class="panel-heading">EQUIPO {{$nroEquipos+1}}</div>
                 <div class="panel-body">
                     @include('alerts.allerrors')
                     @include('alerts.errors')

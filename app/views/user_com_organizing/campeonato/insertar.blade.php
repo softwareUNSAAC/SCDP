@@ -33,17 +33,15 @@
 
     $numero=(int)$user;
     $cadena= "CAM".$numero."1";
-    //fecha de actual
-    $hoy = getdate();
+    date_default_timezone_set('America/Lima');
+    $fecha = date("Y-m-d");
 
-    $dia=$hoy['mday'];
-    $mes=$hoy['mon'];
-    $anio=$hoy['year'];
-    $fecha=$anio."-".$mes."-".$dia;
-
+    $flag=2;
+    if($campeonato){
     $flag=strcmp($cadena,$campeonato->codCampeonato);
+    }
     $nrointegrantess = IntegrantesCO::where('codCom_Org','=',Session::get('user_idcom_orgdor'))->count();
-    print $nrointegrantess;
+
     ?>
     <!-- END PARA MANEJO DE ERRORES -->
     <div class="row">
@@ -110,10 +108,12 @@
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <!-- BEGIN PARA MANEJO DE ERRORES -->
-                    @include('alerts.allsuccess')
+                        <div class="panel panel-info">
+                            <div class="panel panel-heading"> lista de integrates</div>
+                            @include('alerts.allsuccess')
+                            <div class="panel panel-body">
                     <!-- END PARA MANEJO DE ERRORES -->
-                        <table data-toggle="table" data-url="tables/data2.json">
+                                <table data-toggle="table" data-url="tables/data2.json">
                             <thead>
                             <tr>
                                 <th>DNI</th>
@@ -137,6 +137,8 @@
                             @endforeach
                             </tbody>
                         </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

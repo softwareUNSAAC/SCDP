@@ -4,7 +4,7 @@ $cod=$partido->codpartido;
 //$cod=DB::select('SELECT max(`id`) FROM `treunion` WHERE 1').get();
 $nuevo =(int)$price+1;
 
-$conclusiones=DB::select('select * from tjugadorenjuego WHERE codpartido=?',array($cod));
+$conclusiones=DB::select('select * from tjugadorenjuego WHERE codPartido=?',array($cod));
 $arr=array();
 
 foreach ($conclusiones as $user)

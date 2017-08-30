@@ -158,7 +158,7 @@ class CuentasController extends \BaseController {
     {
         $users = DB::table('tcom_org')->count();
         $users++;
-        return  "COM0".$id."0".$users;
+        return  "COM".$id.$users;
     }
     public function crearco_post()
     {
@@ -236,7 +236,6 @@ class CuentasController extends \BaseController {
         $userallcomorgdor = DB::table('tusuarios')
                 ->join('tcom_org', 'tusuarios.idUsuario', '=', 'tcom_org.idUsuario')
                 //->where('tipo','=','comision organizadora')
-                ->groupBy('tusuarios.idUsuario')
                 ->paginate(3);
         return View::make('user_administrator.Corganizador.listar')
                 ->with('userallcomorgdor',$userallcomorgdor);

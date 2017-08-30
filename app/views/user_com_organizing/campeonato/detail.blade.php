@@ -234,7 +234,7 @@
                                 </td>
                                 <td>{{$val->estado}}</td>
                                 <td>
-                                    {{ HTML::image('storage/equipo/camiseta/'.$val->fotouniforme,'Uniforme empty',array('class'=>'img-responsive','title'=>'Uniforme del equipo','style'=>'width: 50px')) }}
+                                    {{ HTML::image('storage/equipo/camiseta/'.$val->logo,'Uniforme empty',array('class'=>'img-responsive','title'=>'Uniforme del equipo','style'=>'width: 50px')) }}
                                 </td>
                                 <td>
                                     <a class="label label-success" href="{{$campeonato->codCampeonato}}/equipodetalle/{{$val->codEquipo}}" >

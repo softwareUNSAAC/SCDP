@@ -35,21 +35,6 @@
                             {{Form::text('Nombre',$jugadoraeditar->codDocente.' '.$jugadoraeditar->dataDocente[0]->nombre.' '.$jugadoraeditar->dataDocente[0]->apellidoP.' '.$jugadoraeditar->dataDocente[0]->apellidoM,['class'=>'form-control','placeholder'=>'ingrese el nombre del integrante','id'=>'docenteauto','readonly'=>'readonly'])}}
                         </div>
                         <div class="form-group">
-                            {{Form::label('lbldireccion','direccion:')}}
-                            {{Form::text('direccion','',['class'=>'form-control','placeholder'=>'ingrese el direccion'])}}
-                        </div>
-                        <div class="form-group">
-                            {{Form::label('lbltelefono','telefono:')}}
-                            {{Form::tel('telefono','',['class'=>'form-control','placeholder'=>'ingrese el telefono'])}}
-                        </div>
-
-                        <div class="form-group">
-                            {{Form::label('lbledad','edad:')}}
-                            {{Form::number('edad','',['class'=>'form-control','placeholder'=>'ingrese el edad'])}}
-                        </div>
-
-
-                        <div class="form-group">
                             <label>Foto:</label><br>
                             <div class="col-sm-10">
                                 <input name="foto" type="file" id="imgInp" class="btn btn-default">
