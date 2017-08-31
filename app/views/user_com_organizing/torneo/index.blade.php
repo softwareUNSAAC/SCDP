@@ -48,9 +48,7 @@
                                 <a class="label label-success" href="{{ URL::to('torneo/');}}/{{$codcampeonato}}/{{$torneo->codRueda}}/detail.html" >
                                     <span class="glyphicon glyphicon-list"></span> &nbsp;Detail
                                 </a><br>
-                                <a class="label label-danger" href="{{ URL::to('torneo/delete/');}}/{{$codcampeonato}}/{{$torneo->codRueda}}">
-                                    <span class="glyphicon glyphicon-trash">&nbsp;Delete</span>
-                                </a>
+
                             </td>
                         </tr>
                     @endforeach

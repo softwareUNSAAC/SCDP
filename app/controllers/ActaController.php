@@ -18,8 +18,17 @@ class ActaController extends \BaseController {
         return View::make('user_com_organizing.acta.ver')->with('todoReunion',$todoReunion);
 	}
 
-    public function conclusiones_all($codcampeonato)
+    public function conclusiones_all()
 	{
+
+        $campeonato=Campeonato::where('codCom_Org','=',Session::get('user_idcom_orgdor'))->get();
+        $campeonato1=null;
+        foreach ($campeonato as $value )
+        {
+            $campeonato1=$value;
+        }
+        $codcampeonato=$campeonato1->codCampeonato;
+
         $todoConclusion=DB::table('treunion')
             ->join('tfecha', 'treunion.idFecha', '=', 'tfecha.idFecha')
             ->join('trueda', 'tfecha.codRueda', '=', 'trueda.codRueda')
@@ -27,11 +36,19 @@ class ActaController extends \BaseController {
             ->select('treunion.codReunion', 'treunion.fecha')
             ->where( 'tcampeonato.codCampeonato', '=', $codcampeonato)
             ->get();
+        $price2=DB::table('tfecha')
+            ->join('trueda', 'tfecha.codRueda', '=', 'trueda.codRueda')
+            ->join('tcampeonato', 'trueda.codCampeonato', '=', 'tcampeonato.codCampeonato')
+            ->select('tfecha.idFecha as idFecha','tfecha.nroFecha as nroFecha')
+            ->where( 'tcampeonato.codCampeonato', '=', $codcampeonato)
+            ->get();
+
 
 		//$categories = Category::all();
 		//$todoConclusion = DB::select('select * from treunion');
-		return View::make('user_com_organizing.acta.verc')->with('todoConclusion', $todoConclusion)->
-            with('codcampeonato',$codcampeonato);
+		return View::make('user_com_organizing.acta.verc')->with('todoConclusion', $todoConclusion)
+            ->with('codcampeonato',$codcampeonato)
+            ->with('price2',$price2);
 	}
 
 	public function conclusiones_add($id)
@@ -78,10 +95,15 @@ class ActaController extends \BaseController {
 		//$category = DB::table('treunion')->where('id', '=', $id)->get();
 
 		$category = Reunion::find($id);
-
+        $price2=DB::table('tfecha')
+            ->join('trueda', 'tfecha.codRueda', '=', 'trueda.codRueda')
+            ->join('tcampeonato', 'trueda.codCampeonato', '=', 'tcampeonato.codCampeonato')
+            ->select('tfecha.idFecha as idFecha','tfecha.nroFecha as nroFecha')
+            ->where( 'tcampeonato.codCampeonato', '=', $codcampeonato)
+            ->get();
 //		$category = DB::select('select * from  treunion where id=?',array($id));
 		return View::make('user_com_organizing.acta.verc')->with('todoConclusion', $todoConclusion)->with('category', $category)
-            ->with('codcampeonato',$codcampeonato);;
+            ->with('codcampeonato',$codcampeonato) ->with('price2',$price2);
 	}
 
 	public function conclusiones_post_edit($codcampeonato,$id)
@@ -120,9 +142,18 @@ class ActaController extends \BaseController {
 	}
 	
 
-	public function actare_all($codcampeonato,$id)
+	public function actare_all($id)
 	{
 		//$category = DB::select('select * from Tcambio where idreunion=? ',array($id));
+
+        $campeonato=Campeonato::where('codCom_Org','=',Session::get('user_idcom_orgdor'))->get();
+        $campeonato1=null;
+        foreach ($campeonato as $value )
+        {
+            $campeonato1=$value;
+        }
+        $codcampeonato=$campeonato1->codCampeonato;
+
 		$category=Reunion::find($id);
 		$buscar=$id;
         $todoasistente=DB::table('treunion')
@@ -149,9 +180,18 @@ class ActaController extends \BaseController {
 
 
 	}
-	public function actareunion_all($codcampeonato,$id)
+	public function actareunion_all($id)
 	{
 		//$category = DB::select('select * from Tcambio where idreunion=? ',array($id));
+        $campeonato=Campeonato::where('codCom_Org','=',Session::get('user_idcom_orgdor'))->get();
+        $campeonato1=null;
+        foreach ($campeonato as $value )
+        {
+            $campeonato1=$value;
+        }
+        $codcampeonato=$campeonato1->codCampeonato;
+
+
         $category=Reunion::find($id);
         $buscar=$id;
         $todoasistente=DB::table('treunion')
@@ -204,7 +244,7 @@ class ActaController extends \BaseController {
 		}
 		else
 		{
-			    $dni = substr(Input::get('delegado'),0,8);
+			    $dni = substr(Input::get('delegado'),0,6);
               if(!$Asi=DB::table('tasistente')->where('dni','=',$dni)->where('codReunion','=',$id)->get()) {
 
                   $category = new Asistente;
@@ -214,10 +254,20 @@ class ActaController extends \BaseController {
 
                   $category->save();
               }
+              else{
 
-			return Redirect::to('campeonato/detail/'.$codcampeonato.'/abriracta/'.$id);
-				
-		}
+                  $validator1['percy']='agreagado no  correctamente';
+
+
+                  return Redirect::back()->withErrors($validator1);
+
+              }
+            $validator1['percy']='agreagado correctamente';
+
+
+            return Redirect::back()->withErrors($validator1);
+
+        }
 	}
 	public function actareunion_add2($codcampeonato,$id)
 	{
@@ -246,9 +296,12 @@ class ActaController extends \BaseController {
 				$category->codAgenda = $codagenda;
 				$category->tema =Input::get('tema');
 				$category->codReunion = $id;
-			$category->save();
+			    $category->save();
 
-			return Redirect::to('campeonato/detail/'.$codcampeonato.'/abriracta/'.$id);
+            $validator1['percy']='agreagado correctamente';
+
+
+            return Redirect::back()->withErrors($validator1);
 
 
 		}
@@ -283,7 +336,10 @@ class ActaController extends \BaseController {
 				$category->codAgenda = Input::get('codagenda');
 			$category->save();
 
-            return Redirect::to('campeonato/detail/'.$codcampeonato.'/abriracta/'.$id);
+            $validator1['percy']='agreagado correctamente';
+
+
+            return Redirect::back()->withErrors($validator1);
 
 			
 		}

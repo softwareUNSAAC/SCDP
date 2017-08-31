@@ -253,6 +253,9 @@ Route::group(array('before'=>'organ'), function()
 
             Route::resource('torneo','TorneoController');
 
+            Route::get('torneos/list.html','TorneoController@show1');
+
+
             Route::post('torneo/{id}/{id2}/detail.html/reportes','TorneoController@reportes');
             //fechas y partido
             Route::get('fechas/{id1}/{id2}/{id3}/detail.html','FechasController@detail');
@@ -377,7 +380,7 @@ Route::get('autodocenteuno','JugadorController@autocompletedocenteuno');
 Route::get('campeonato/autodocente','AutocompletadoController@autocompletedocente');//autocompletardo
 //Route::get('escenarioauto', 'AutocompletadoController@autocompleteescenario');
 
-//Route::get('autodelegado','AutocompletadoController@autocompletedelegado');
+Route::get('acta/verA/{id}/autodelegado','AutocompletadoController@autocompletedelegado');
 
 Route::get('arbitros/ver', 'ArbitroController@index');
 Route::get('tablaposicion/ver.html','UsernormalController@tablaposiciones');

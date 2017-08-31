@@ -43,6 +43,9 @@
             @include('alerts.allerrors')
             @include('alerts.errors')
             <!-- END PARA MANEJO DE ERRORES -->
+
+                @if($partidoProgramado)
+
                 <div class="panel-body">
                     <div class="row">
 
@@ -128,6 +131,15 @@
                     </div>
 
                 </div>
+
+                @else
+                    <div class="panel-body">
+
+                        <h4> partidos no programados</h4>
+                    </div>
+
+
+                @endif
                 <div class="panel-footer">
                     <a class="btn btn-success" href="">Aceptar</a>
                 </div>

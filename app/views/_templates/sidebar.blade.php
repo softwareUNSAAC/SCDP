@@ -46,68 +46,8 @@
                     </ul>                    
                 </li>
                 <!-- End cuentas de usuarios  -->
-            <!-- begin miembro comision de justicia -->
-            <li class="parent ">
-                <a href="{{ URL::to( 'miembrocomjusticia/listar');}}">
-                    <span class="glyphicon glyphicon-paperclip"></span>Comision de Justicia<span data-toggle="collapse" href="#sub-item-miembro" class="icon pull-right"><em class="glyphicon glyphicon-s glyphicon-plus"></em></span>
-                </a>
-                <ul class="children collapse" id="sub-item-miembro">
-                    <li>
-                        <a class="" href="{{ URL::to( 'miembrocomjusticiainsertar');}}">
-                            <span class="glyphicon glyphicon-share-alt"></span> ingresar Nuevo Miembro
-                        </a>
-                    </li>
-                </ul>
-            </li>
-            <!-- end miembro comision de justicia -->
-            <!-- begin docente -->
-            <li class="parent ">
-                <a href="{{ URL::to( 'docente/listar');}}">
-                    <span class="glyphicon glyphicon-user"></span> Docentes <span data-toggle="collapse" href="#sub-item-docente" class="icon pull-right"><em class="glyphicon glyphicon-s glyphicon-plus"></em></span>
-                </a>
 
-                <ul class="children collapse" id="sub-item-docente">
-                    <li>
-                        <a class="" href="{{ URL::to( 'docente/insertar');}}">
-                            <span class="glyphicon glyphicon-share-alt"></span> Agregar Docente
-                        </a>
-                    </li>
 
-                </ul>
-            </li>
-            <!-- end docente-->
-            <!-- begin docente -->
-            <li class="parent ">
-                <a href="{{ URL::to( 'espectadores/listar');}}">
-                    <span class="glyphicon glyphicon-user"></span> espectadores <span data-toggle="collapse" href="#sub-item-espectador" class="icon pull-right"><em class="glyphicon glyphicon-s glyphicon-plus"></em></span>
-                </a>
-
-                <ul class="children collapse" id="sub-item-espectador">
-                    <li>
-                        <a class="" href="{{ URL::to( 'espectadores/insertar');}}">
-                            <span class="glyphicon glyphicon-share-alt"></span> Agregar espectador
-                        </a>
-                    </li>
-
-                </ul>
-            </li>
-            <!-- end docente-->
-            <!-- begin departamento academico -->
-            <li class="parent ">
-                <a href="{{ URL::to( 'DptoAcademico/listar');}}">
-                    <span class="glyphicon glyphicon-bookmark"></span> Departamento Academico <span data-toggle="collapse" href="#sub-item-2" class="icon pull-right"><em class="glyphicon glyphicon-s glyphicon-plus"></em></span>
-                </a>
-
-                <ul class="children collapse" id="sub-item-2">
-                    <li>
-                        <a class="" href="{{ URL::to( 'DptoAcademico/insertar');}}">
-                            <span class="glyphicon glyphicon-share-alt"></span> Agregar
-                        </a>
-                    </li>
-
-                </ul>
-            </li>
-            <!-- end departamento academico -->
 
                 
             <!-- ////////////////////////////////////END USER ADMINISTRADOR ////////////////////////////////////-->
@@ -140,6 +80,24 @@
                 </ul>
             </li>
             <!-- end docente-->
+
+            <li class="parent ">
+                <a href="{{ URL::to( 'DptoAcademico/listar');}}">
+                    <span class="glyphicon glyphicon-bookmark"></span> Dpto. Academico <span data-toggle="collapse" href="#sub-item-2" class="icon pull-right"><em class="glyphicon glyphicon-s glyphicon-plus"></em></span>
+                </a>
+
+                <ul class="children collapse" id="sub-item-2">
+                    <li>
+                        <a class="" href="{{ URL::to( 'DptoAcademico/insertar');}}">
+                            <span class="glyphicon glyphicon-share-alt"></span> Agregar
+                        </a>
+                    </li>
+
+                </ul>
+            </li>
+
+
+
 
             <li><a href="{{URL::to('torneos/list.html')}}"><span class="glyphicon glyphicon-tags"></span> torneos</a></li>
             <!-- end torneos-->

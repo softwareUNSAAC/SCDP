@@ -49,52 +49,8 @@ $fixture3=Fixture::where( 'codEquipo1', '=', $equipo->codEquipo)->orwhere( 'codE
             echo $idfecha;
         }
 
-     if($idfecha!=-1){
-        $fecha=Fechas::find($idfecha);
-        $nrofecha=$fecha->nroFecha;
-        $partidoActual=DB::select('call resumen_partido(?,?)',array($nrofecha,$equipo->codEquipo));
-         $exite="";
-         foreach($partidoActual as $value)
-         {
-             echo $exite=$value->id_equipo1;
-         }
-
-        if($exite!="")
-        {
-            foreach($partidoActual as $value)
-            {
-                $codEquipo1=$value->id_equipo1;
-                $codEquipo2=$value->id_equipo2;
-                $idfixture=$value->id_fixture;
-            }
-            $nroPlantilla=0;
-            $nro1=strcmp($codEquipo1,$equipo->codEquipo);
-            $nro2=strcmp($codEquipo2,$equipo->codEquipo);
-          if($nro1==0)
-          {
-              $nroPlantilla=1;
-          }
-          if($nro2==0)
-           {
-
-               $nroPlantilla=2;
-           }
-
-          $nroPartido=Fixture::find($idfixture)->nroPartido;
-          $programacion=Programacion::where('idFecha','=',$idfecha)->where('nroPartido','=',$nroPartido)->first();
-          $partidoA=Partido::where('codProgramacion','=',$programacion->codProgramacion)->first();
-          $Plantilla=Planilla::where('codPartido','=',$partidoA->codPartido)->where('nroPlantilla','=',$nroPlantilla)->first();
-          $codPla=$Plantilla->codPantilla;
-          echo "<br>".$partidoA->codPartido."<br>".$nroPlantilla. " ".$codPla;
-         }
-         else{
-
-             $descansa=1;
-
-         }
 
 
-    }
 
     ?>
     <!-- BEGIN PAR MANEJO DE ERRORES -->
@@ -210,81 +166,7 @@ $fixture3=Fixture::where( 'codEquipo1', '=', $equipo->codEquipo)->orwhere( 'codE
         <div class="row ">
             <!--  camabiar este esta con la despues de comenzar el los partidos con el fixture-->
 
-            @if($idfecha!=-1)
-                <div class="col-md-3 col-no-gutter">
-                    <div class="panel panel-default">
-                        <div class="panel-heading text-center">partido de la fecha {{$nrofecha}}</div>
-                        <div class="panel-body">
-                            <div class="col-md-6">
-                            @if(!$descansa)
-                            <div class="label-success text-center">
-                                {{Equipo::find($codEquipo1)->nombre}}
-                            </div>
-                            <div class="label-info text-center">
-                                vs
-                            </div>
-                            <div class="label-danger text-center ">
-                                {{Equipo::find($codEquipo2)->nombre}}
-                            </div>
-                            @else
-                                <div class="label-success text-center">
-                                    {{$equipo->nombre}}
-                                </div>
-                                <div class="label-danger text-center">
-                                    descansa
-                                </div>
-                            @endif
-                           </div>
 
-                            @if($codPla!="")
-                            <div class= "col-md-6 label label-info">
-                            <a class="widget-right" href="{{URL::to('plantilla/'.$codPla)}}">
-                                <span class="glyphicon glyphicon-list-alt"></span> &nbsp;Añadir plantilla
-                            </a>
-                            </div>
-                            @endif
-
-                            <!--pantilla determinar el partido de la fecha  -->
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3 col-no-gutter">
-                    <div class="panel panel-default">
-                        <div class="panel-heading text-center">lista de partidos jugados</div>
-                        <div class="panel-body">
-                            <div class="canvas-wrapper">
-                                <div class="col-lg-3">
-                                    <!-- referencias  a lista de partidos jugados-->
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3 col-no-gutter">
-                    <div class="panel panel-default">
-                        <div class="panel-heading text-center">Puntaje</div>
-                        <div class="panel-body">
-                            <div class="canvas-wrapper">
-                                <div class="col-lg-3">
-                                    <!-- determinar el puntaje-->
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3 col-no-gutter">
-                    <div class="panel panel-default">
-                        <div class="panel-heading text-center">goleadores</div>
-                        <div class="panel-body">
-                            <div class="canvas-wrapper">
-                                <div class="col-lg-3">
-                                    <!-- lista de goleadores de equipo-->
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            @else
                 <div class="col-md-4 col-no-gutter">
                     <div class="panel panel-default">
                         <div class="panel-heading text-center">lista de partidos jugados</div>
@@ -321,7 +203,6 @@ $fixture3=Fixture::where( 'codEquipo1', '=', $equipo->codEquipo)->orwhere( 'codE
                         </div>
                     </div>
                 </div>
-            @endif
 
         </div>
     </div>

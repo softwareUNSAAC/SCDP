@@ -50,9 +50,6 @@
                                 <a class="label label-success" href="detail/{{ $camp->codCampeonato}}" >
                                     <span class="glyphicon glyphicon-list"></span> &nbsp;Detail
                                 </a><br>
-                                <a class="label label-danger" href="eliminar/{{ $camp->codCampeonato}}">
-                                    <span class="glyphicon glyphicon-trash">&nbsp;Delete</span>
-                                </a>
                             </td>
                         </tr>
                     @endforeach
@@ -64,8 +61,9 @@
             </div>
         </div>
     </div>
+
+@endsection
+
     @section ('scrips')
         <script src="{{asset('/js/bootstrap-table.js')}}"></script>
     @stop
-@endsection
-

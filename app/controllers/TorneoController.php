@@ -47,6 +47,8 @@ class TorneoController extends \BaseController {
      */
     public function store()
     {
+
+
         $codcampeonato = Input::get('codcampeonato');
         $respuesta = Torneo::crearinicio(Input::all());
         if($respuesta['error']==true)
@@ -64,11 +66,31 @@ class TorneoController extends \BaseController {
     public function show($codcampeonato)
     {
         $torneos = Torneo::where('codCampeonato','=',$codcampeonato)->get();
+        $tabla= DB::select('call TABLA');
+        $goles= DB::select('call GOLES');
+        $goleadores= DB::select('call GOLEADORES');
+
+        return View::make('user_com_organizing.torneo.index',compact('torneos'))
+            ->with('codcampeonato',$codcampeonato)
+            ->with('tabla',$tabla)
+            ->with('goles',$goles)
+            ->with('goleadores',$goleadores);
+    }
+
+    public function show1()
+    {
+        $campeonato=Campeonato::where('codCom_Org','=',Session::get('user_idcom_orgdor'))->get();
+        $campeonato1=null;
+        foreach ($campeonato as $value )
+        {
+            $campeonato1=$value;
+        }
+        $codcampeonato=$campeonato1->codCampeonato;
+
+        $torneos = Torneo::where('codCampeonato','=',$codcampeonato)->get();
         return View::make('user_com_organizing.torneo.index',compact('torneos'))
             ->with('codcampeonato',$codcampeonato);
     }
-
-
     /**
      * Show the form for editing the specified resource.
      *
@@ -399,7 +421,10 @@ class TorneoController extends \BaseController {
     public  function detail($codcampeonato,$idtorneo)
     {
 
-
+        $torneos = Torneo::where('codCampeonato','=',$codcampeonato)->get();
+        $tabla= DB::select('call TABLA');
+        $goles= DB::select('call GOLES');
+        $goleadores= DB::select('call GOLEADORES');
         //$tabla = DB::select('call TABLAPOSICIONES');
         $fixture = Fixture::where('codRueda', '=', $idtorneo)->get();
         $fechas = Fechas::where('codRueda', '=', $idtorneo)->get();
@@ -413,7 +438,10 @@ class TorneoController extends \BaseController {
             //->with('equipos', $equipos)
             ->with('torneo', $torneo)
            // ->with('tabla', $tabla)
-            ->with('nroequipos', $nroequipos);
+            ->with('nroequipos', $nroequipos)
+            ->with('tabla',$tabla)
+            ->with('goles',$goles)
+            ->with('goleadores',$goleadores);
 
 
 

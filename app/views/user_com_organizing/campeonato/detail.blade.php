@@ -34,7 +34,6 @@
                     <a class="btn btn-info" href="{{'../'.$campeonato->codCampeonato.'/actividad.html'}}">cronograma</a>
                     <a class="btn btn-info" href="{{'../'.$campeonato->codCampeonato.'/equipo.html'}}">crear equipo</a>
                     <a class="btn btn-info" href="{{'../'.$campeonato->codCampeonato.'/miembro.html'}}">comision de justicia</a>
-                    <a class="btn btn-info" href="#acta">acta de reuniones</a>
                     <div class="panel-tools pull-right">
                         <div class="form-inline">
                             {{ Form::open(['route'=> ['torneo.show',$campeonato->codCampeonato], 'method'=>'get']) }}
@@ -91,124 +90,7 @@
     </div>
     <br>
 
-    <div class="row row-no-gutter col-no-gutter-container" id="acta">
-        <div class="col-md-12 col-no-gutter">
-            <div class="panel panel-default">
-                <div class="panel-heading">Acta Reuniones
-                    <div class="panel-tools pull-right">
-                        <div class="form-inline">
-                            <div class="form-group">
-                                <a class="btn btn-info margin text-lowercase" type="button" href="{{$campeonato->codCampeonato}}/actadd.html"><span class="glyphicon glyphicon-plus"></span>Nueva reunion</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="panel-body">
-                    <table data-toggle="table" data-url="tables/data2.json">
-                        <thead>
-                        <tr>
-                            <th>codigo Reunion </th>
-                            <th>Fecha </th>
-                            <th>acciones </th>
 
-                        </tr>
-                        </thead>
-                        <tbody>
-                        @foreach($todoReunion as $val)
-                            <tr>
-                                <td>{{$val->codReunion}}</td>
-                                <td>{{$val->fecha}}</td>
-
-                                <!--codigo php -->
-                                <?php
-                                $habilitado="20".date("y-m-d");
-                                //$a=(string)$habilitado2;
-                                $anio1=substr($habilitado, 0,4);
-                                $mes1=substr($habilitado, 5,2);
-                                $dia1=substr($habilitado, 8,2);
-                                $anio2=substr($val->fecha, 0,4);
-                                $mes2=substr($val->fecha, 5,2);
-                                $dia2=substr($val->fecha, 8,2);
-                                $difanio=(int)$anio1-(int)$anio2;
-                                $difmes=(int)$mes1-(int)$mes2;
-                                $difdia=(int)$dia1-(int)$dia2;
-                                //echo $difdia;
-                                $mayor=0;
-                                if($difanio>=0)
-                                {
-                                    if($difanio>0)
-                                    { $mayor=1;}
-                                    else
-                                    { $mayor=0;}
-                                }
-                                else
-                                {
-                                    $mayor=-1;
-                                }
-                                if($mayor==0)
-                                {
-                                    if($difmes>=0)
-                                    {
-                                        if($difmes>0)
-                                        { $mayor=1;}
-                                        else
-                                        { $mayor=0;}
-                                    }
-                                    else
-                                    {
-                                        $mayor=-1;
-                                    }
-                                }
-                                if($mayor==0)
-                                {
-                                    if($difdia>=0)
-                                    {
-                                        if($difdia>0)
-                                        { $mayor=1;}
-                                        else
-                                        { $mayor=0;}
-                                    }
-                                    else
-                                    {
-                                        $mayor=-1;
-                                    }
-
-                                }
-                                ?>
-                                @if($mayor>=0)
-                                    @if($mayor==0)
-                                        <td>
-                                            <a href="{{$campeonato->codCampeonato}}/actadetalle/{{$val->codReunion}}" class="btn btn-default label label-info">
-                                                <span class="glyphicon glyphicon-list"></span> ver
-                                            </a>
-                                            <a href="{{$campeonato->codCampeonato}}/abriracta/{{$val->codReunion}}" class="btn btn-default label label-info">
-                                                <span class="glyphicon glyphicon-edit"></span> editar
-                                            </a>
-
-                                        </td>
-                                    @else
-                                        <td>
-
-                                            <a href="{{$campeonato->codCampeonato}}/actadetalle/{{$val->codReunion}}" class="btn btn-default label label-info">
-                                                <span class="glyphicon glyphicon-th-list"></span> ver
-                                            </a>
-
-                                        </td>
-                                    @endif
-                                @endif
-
-                            </tr>
-                        @endforeach
-                        </tbody>
-                    </table>
-                </div>
-                <div class="panel-footer">
-                    <a class="btn btn-success" href="#">Aceptar</a>
-                </div>
-            </div>
-        </div>
-    </div>
-    <br>
 
     <div class="row col-no-gutter-container" id="equipos">
         <div class="col-lg-12 col-no-gutter">

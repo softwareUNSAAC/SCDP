@@ -108,9 +108,9 @@ class CuentasController extends \BaseController {
     public function listar()
     {
         $useralladmin = DB::table('tusuarios')          
-                ->join('tadministrador', 'tusuarios.idusuario', '=', 'tadministrador.idusuario')
-                ->join('tdocente','tadministrador.coddocente','=','tdocente.coddocente')
-                ->groupBy('tusuarios.idusuario')->paginate(3);
+                ->join('tadministrador', 'tusuarios.idUsuario', '=', 'tadministrador.idUsuario')
+                ->join('tdocente','tadministrador.codDocente','=','tdocente.codDocente')
+                ->paginate(3);
 
         return View::make('user_administrator.admin.listar')->with('useralladmin',$useralladmin);
     }
@@ -365,9 +365,8 @@ class CuentasController extends \BaseController {
     {        
         $userallequipo = DB::table('tusuarios')
                 ->join('tequipo', 'tusuarios.idUsuario', '=', 'tequipo.idUsuario')
-                ->groupBy('tusuarios.idUsuario')
                 ->select('tusuarios.idUsuario','tusuarios.username', 'tusuarios.tipo', 'tusuarios.estado','tequipo.nombre')
-                ->paginate(6);
+                ->get();
         return View::make('user_administrator.Equipo.listar')
                 ->with('userallequipo',$userallequipo);
     }    

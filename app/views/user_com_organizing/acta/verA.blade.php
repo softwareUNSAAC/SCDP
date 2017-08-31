@@ -248,10 +248,12 @@ foreach ($conclusiones as $user)
 <br>
 <!-- endconclusion-->
 
-@section ('scrips')
-    <script src="{{asset('/js/bootstrap-table.js')}}"></script>
-    <script src="{{asset('/js/jquery-ui/jquery-ui.js')}}"></script>
 
+@endsection
+@section ('scrips')
+
+    <script src="{{asset('/js/jquery-ui/jquery-ui.js')}}"></script>
+    <script src="{{asset('/js/bootstrap-table.js')}}"></script>
     <script>
         $(function() {
             $("#autdelegado").autocomplete({
@@ -264,4 +266,3 @@ foreach ($conclusiones as $user)
         });
     </script>
 @stop
-@endsection

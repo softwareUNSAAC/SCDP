@@ -30,15 +30,25 @@ class AutocompletadoController extends \BaseController
         return Response::json($result);
     }
 
-    function autocompletedelegado($idcam,$idre)
+    function autocompletedelegado()
     {
+
+        $campeonato=Campeonato::where('codCom_Org','=',Session::get('user_idcom_orgdor'))->get();
+        $campeonato1=null;
+        foreach ($campeonato as $value )
+        {
+            $campeonato1=$value;
+        }
+        $codcampeonato=$campeonato1->codCampeonato;
 
 
         $term = Str::lower(Input::get('term'));
         //convertimos los datos a un arreglo puro
         $data=DB::table('tdelegando')
             ->join('tdocente', 'tdelegando.codDocente', '=', 'tdocente.codDocente')
+            ->join('tequipo', 'tdelegando.codEquipo', '=', 'tequipo.codEquipo')
             ->select('tdelegando.dni', 'tdocente.nombre','tdocente.apellidoP','tdocente.apellidoM')
+            ->where('tequipo.codCampeonato','=', $codcampeonato)
             ->get();
 
 

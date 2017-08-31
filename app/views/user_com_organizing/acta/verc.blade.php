@@ -16,15 +16,15 @@
 
 @section('contenido')
 
-<?php 
+<?php
+
+
 $pricef = DB::table('tfecha')->max('nroFecha');
 $pricer = DB::table('treunion')->count();
 //$cod=DB::select('SELECT max(`id`) FROM `treunion` WHERE 1').get();
 //$nuevo =(int)$price+1;
 $cod="RE0".($pricef).($pricer+1);
 //echo $nuevo;
-$price2 = DB::table('tfecha')->select('idFecha', 'nroFecha')->get();
-
 $arr=array();
 foreach ($price2 as $user)
 {
@@ -46,7 +46,7 @@ foreach ($price2 as $user)
 				<div class="col-lg-3">
 			@if(!isset($category))
 				{{Form::open(array('method' => 'POST', 'url' => 'campeonato/detail/'.$codcampeonato.'/actaagregar', 'role' => 'form'))}}
-				<div class="form-group">
+				<div class="form-group" style= "display: none">
 
 					{{Form::label('idreunion')}}
 					{{Form::text('idreunion', $cod, array('class' => 'form-control'))}}

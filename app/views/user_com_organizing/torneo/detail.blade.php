@@ -25,7 +25,7 @@
                 <strong class="primary-font">Dia de Inicio: </strong><span class="text-primary">{{$torneo->fechaCreacion}}</span><br>
             </div>
             <div class="panel panel-footer">
-                <a class="btn btn-danger" href="#posiciones">Tabla de posiciones</a>
+                <a class="btn btn-danger" href="#fixture1">Tabla de posiciones</a>
 
                 <?php $fixturefechaexiste=Fixture::where('codRueda','=',$torneo->codRueda)->first();
                 $fixture=Fixture::where('codRueda','=',$torneo->codRueda)->get();?>
@@ -44,7 +44,110 @@
     <!--============= tabla de posiciones  buscararchivo tabla150216.txt ==================== -->
     <!--============= endtabla de posiciones    -->
 
+    <div class="col-md-12" id="fixture1">
+        <div class="panel panel-primary">
+            <div class="panel-heading"><span class="glyphicon glyphicon-info-sign"></span> resumen {{$torneo->nombre}}</div>
+            <div class="panel-body color-orange">
+                <!-- aqui se pondra el fixture del torneo -->
+                <div class="panel panel-footer">
 
+
+                    <div class="panel panel-info ui-tabs-panel">
+                        <div class="panel-heading">Tabla de Colocaciones </div>
+                        <div class="panel-body color-orange">
+
+                            <table data-toggle="table" data-url="tables/data2.json">
+                                <thead>
+                                <tr>
+                                    <th>nro</th>
+                                    <th>Equipos</th>
+                                    <th>PJ</th>
+                                    <th>PG</th>
+                                    <th>PE</th>
+                                    <th>PP</th>
+                                    <th>GF</th>
+                                    <th>GE</th>
+                                    <th>DG</th>
+                                    <th>Puntos</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <?php
+                                $iterator = new MultipleIterator();
+                                $iterator->attachIterator(new ArrayIterator($tabla));
+                                $iterator->attachIterator(new ArrayIterator($goles));
+
+
+                                $nro=1;?>
+
+                                @foreach ($iterator as $current)
+                                    <tr>
+                                        <td>{{$nro++}}</td>
+                                        <td>{{Equipo::find($current[1]->equipo)->nombre}}</td>
+                                        <td>{{$current[0]->PJ}}</td>
+                                        <td>{{$current[0]->PG}}</td>
+                                        <td>{{$current[0]->PE}}</td>
+                                        <td>{{$current[0]->PP}}</td>
+                                        <td> {{$current[1]->GF}}</td>
+                                        <td>{{$current[1]->GC}}</td>
+                                        <td>{{$current[1]->DG}}</td>
+                                        <td>{{$current[0]->PU}}</td>
+                                    </tr>
+                                @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="panel panel-info ui-tabs-panel">
+                        <div class="panel-heading">Tabla de Goleadores </div>
+                        <div class="panel-body color-orange">
+
+                            <table data-toggle="table" data-url="tables/data2.json">
+                                <thead>
+                                <tr>
+                                    <th>nro</th>
+                                    <th>nombre</th>
+                                    <th>goles</th>
+
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <?php
+
+
+
+                                $nro=1;?>
+
+                                @foreach ($goleadores as $value)
+                                    <tr>
+                                        <?php
+                                        $docente=Docente::find(Jugador::find($value->dni)->codDocente);
+
+                                        ?>
+                                        <td>{{$nro++}}</td>
+                                        <td>{{$docente->nombre}} {{$docente->apellidoP}} {{$docente->apellidoM}}</td>
+                                        <td>{{$value->goles}}</td>
+
+                                    </tr>
+                                @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+
+
+                </div>
+            </div>
+            <div class="panel-footer">
+                <a class="btn btn-primary" href="#">Aceptar</a>
+            </div>
+        </div>
+    </div>
 
 
     <div class="col-md-12" id="fixture">
@@ -68,26 +171,7 @@
                         <div class="panel-heading">
                             FECHA {{$fecha}}
                             <div class="pull-right">
-
                                 <?php $fechaexiste = Fechas::where('nroFecha', '=',$fecha )->where('codRueda','=',$torneo->codRueda)->first();?>
-                                @if($fechaexiste != '')
-                                        <?php  $programacionexiste=Programacion::where('idFecha', '=',$fechaexiste->idFecha)->first();
-                                        $programacionro=Programacion::where('idFecha', '=',$fechaexiste->idFecha)->count();
-                                        ?>
-                                    @if($programacionexiste != '' && $programacionro==$nroPartido)
-
-
-                                                <a class="btn btn-success" href="{{URL::to( 'fechas/'.$codcampeonato.'/'.$torneo->codRueda.'/'.$fechaexiste->idFecha.'/detail.html');}}">detalle</a>
-
-                                            @else
-                                                <a class="btn btn-warning" href="{{ URL::to('fecha/edit/'.$codcampeonato.'/'.$torneo->codRueda.'/'.$fecha);}}">programacion</a>
-                                            @endif
-                                @else
-
-                                    <a class="btn btn-success" href="{{ URL::to('fecha/edit/'.$codcampeonato.'/'.$torneo->codRueda.'/'.$fecha);}}">Programar dia y hora de la Fecha</a>
-                                @endif
-
-
                             </div>
                         </div>
                         <div class="panel-body">
@@ -97,9 +181,6 @@
                                 <tr>
                                     <th>primer equipo </th>
                                     <th>segundo equipo</th>
-                                    <th>fecha</th>
-                                    <th>hora </th>
-
                                 </tr>
                                 </thead>
                                 <?php $fixturefecha=Fixture::where('nroFecha', '=',$fecha )->where('codRueda','=',$torneo->codRueda)->get();?>
@@ -119,8 +200,7 @@
                                     <tr>
                                         <td>{{Equipo::find($val->codEquipo1)->nombre}}</td>
                                         <td>{{Equipo::find($val->codEquipo2)->nombre}}</td>
-                                        <td>{{$val->nroFecha}}</td>
-                                        <td>{{$val->hora}}</td>
+
 
                                     </tr>
                                 @endforeach
@@ -142,6 +222,8 @@
                     </div>
                     <?php }?>
 
+
+
                         <div class="panel panel-info" id="programacion">
                             <div class="panel-heading">
                                 programacion de las fechas
@@ -149,9 +231,17 @@
                             <div class="panel-body">
                                 <?php
                                 for($i=0;$i<$nrofechas;$i++){?>
-                                    <?php $valor=$i+1?>
+                                    <?php $valor=$i+1;
+                                     $fex=Fechas::where('nroFecha','=',$valor)->where('codRueda','=',$torneo->codRueda)->first();
+
+                                ?>
                                     <div class="col-xs-2">
-                                        <a href="<?php echo URL::to('/fecha/edit/'.$torneo->codRueda.'/'.$valor)?>" class="btn btn-primary btn-lg" role="button"><?php echo "fecha ".$valor?></a>
+                                        @if($fex)
+                                             <a href="<?php echo URL::to('/fecha/edit/'.$torneo->codRueda.'/'.$valor)?>" class="btn btn-success btn-lg glyphicon glyphicon-check" role="button"><?php echo "fecha ".$valor?></a>
+                                        @else
+                                            <a href="<?php echo URL::to('/fecha/edit/'.$torneo->codRueda.'/'.$valor)?>" class="btn btn-primary btn-lg " role="button"><?php echo "fecha ".$valor?></a>
+
+                                        @endif
                                     </div>
                                     <?php }?>
                             </div>

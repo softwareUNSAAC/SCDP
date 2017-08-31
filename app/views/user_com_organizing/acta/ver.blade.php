@@ -34,9 +34,10 @@
 				<tbody>
 					@foreach($todoReunion as $cat)
 					<tr>
-						<td>{{$cat->idreunion}}</td>
+						<td>{{$cat->codReunion}}</td>
 						<td>{{$cat->fecha}}</td>
 						<?php
+
 						$habilitado="20".date("y-m-d");
 						//$a=(string)$habilitado2;
 						$anio1=substr($habilitado, 0,4);
@@ -99,11 +100,11 @@
 							@if($mayor==0)
 
 							<td>
-								<a href="/SCDW/public/acta/verAs/{{$cat->idreunion}}" class="btn btn-default">
+								<a href="{{URL::to('/acta/verAs/'.$cat->codReunion)}}" class="btn btn-default">
 								<span class="glyphicon glyphicon-list"></span> ver
 								</a>
 
-								<a href="/SCDW/public/acta/verA/{{$cat->idreunion}}" class="btn btn-default">
+								<a href="{{URL::to('/acta/verA/'.$cat->codReunion)}}" class="btn btn-default">
 								<span class="glyphicon glyphicon-edit"></span> editar
 								</a>
 
@@ -112,7 +113,7 @@
 							@else
 								<td>
 						
-									<a href="/SCDW/public/acta/verAs/{{$cat->idreunion}}" class="btn btn-default">
+									<a href="{{URL::to('/acta/verAs/'.$cat->codReunion)}}" class="btn btn-default">
 									<span class="glyphicon glyphicon-th-list"></span> ver
 									</a>
 									

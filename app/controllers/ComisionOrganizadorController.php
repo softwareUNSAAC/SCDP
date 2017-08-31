@@ -11,7 +11,13 @@ class ComisionOrganizadorController extends \BaseController {
 	{
         $idcomision = Session::get('user_idcom_orgdor');
         $nrointegrantess = IntegrantesCO::where('codCom_Org','=',$idcomision)->count();
-        $campeonato = Campeonato::where('codCom_Org','=',$idcomision)->first();
+
+        $campeonato1=Campeonato::where('codCom_Org','=',Session::get('user_idcom_orgdor'))->get();
+        $campeonato=null;
+        foreach ($campeonato1 as $value )
+        {
+            $campeonato=$value;
+        }
 
         return View::make('user_com_organizing.index')->with('nrointegrantess',$nrointegrantess)->with('campeonato',$campeonato);
 	}
